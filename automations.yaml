@@ -1,0 +1,276 @@
+- id: '1588887056206'
+  alias: Office Empty
+  description: ''
+  trigger:
+  - entity_id: group.office_motion
+    for: 00:15:00
+    platform: state
+    to: 'off'
+  condition: []
+  action:
+  - data: {}
+    entity_id: light.office_office_spots_49
+    service: light.turn_off
+  - data: {}
+    entity_id: switch.office_star_wars_frame_399
+    service: switch.turn_off
+- id: '1588887123994'
+  alias: Kitchen Motion
+  description: ''
+  trigger:
+  - entity_id: binary_sensor.kitchen_kitchen_motion_106
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition:
+  - below: '50'
+    condition: numeric_state
+    entity_id: sensor.kitchen_kitchen_lux_108
+  - after: 06:00:00
+    before: '23:45:00'
+    condition: time
+  action:
+  - data:
+      brightness: 50
+    entity_id: light.kitchen_kitchen_spots_139
+    service: light.turn_on
+  - brightness_pct: 50
+    device_id: 4bb22d5782af41f3b96264fb6aa11f88
+    domain: light
+    entity_id: light.kickboard
+    type: turn_on
+- id: '1588887264693'
+  alias: Dressing Room motion on
+  description: ''
+  trigger:
+  - entity_id: binary_sensor.dressing_room_dressing_motion_296
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition:
+  - after: 07:30:00
+    before: '23:30:00'
+    condition: time
+  action:
+  - data: {}
+    entity_id: light.dressing_room_wardrobes_22
+    service: light.turn_on
+- id: '1588887759670'
+  alias: Pendant On
+  description: ''
+  trigger:
+  - entity_id: binary_sensor.landing_landing_motion_281
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition:
+  - after: 06:00:00
+    before: '23:30:00'
+    condition: time
+  - below: '50'
+    condition: numeric_state
+    entity_id: sensor.landing_landing_lux_283
+  action:
+  - data:
+      brightness: 25
+    entity_id: light.landing_pendant_224
+    service: light.turn_on
+- id: '1588894576731'
+  alias: Pendant off
+  description: ''
+  trigger:
+  - entity_id: binary_sensor.landing_landing_motion_281
+    for: 00:05:00
+    from: 'on'
+    platform: state
+    to: 'off'
+  condition: []
+  action:
+  - data: {}
+    entity_id: light.landing_pendant_224
+    service: light.turn_off
+- id: '1588937256436'
+  alias: Dressing room no motion
+  description: ''
+  trigger:
+  - entity_id: binary_sensor.dressing_room_dressing_motion_296
+    for: 00:15:00
+    from: 'on'
+    platform: state
+    to: 'off'
+  condition:
+  - after: 01:00:00
+    before: 00:06:00
+    condition: time
+  action:
+  - data: {}
+    entity_id: light.dressing_room_wardrobes_22
+    service: light.turn_off
+- id: '1588950734950'
+  alias: Garden Lights Sunset
+  description: ''
+  trigger:
+  - below: '-3'
+    entity_id: sun.sun
+    platform: numeric_state
+    value_template: '{{ state_attr(''sun.sun'', ''elevation'') }}'
+  condition:
+  - after: '15:00:00'
+    before: '23:45:00'
+    condition: time
+  action:
+  - data: {}
+    entity_id: scene.outside
+    service: scene.turn_on
+- id: '1588956962492'
+  alias: Kitchen Empty
+  description: ''
+  trigger:
+  - entity_id: binary_sensor.kitchen_kitchen_motion_106
+    for: 00:15:00
+    from: 'on'
+    platform: state
+    to: 'off'
+  condition: []
+  action:
+  - data: {}
+    entity_id: light.kitchen_kitchen_spots_139
+    service: light.turn_off
+- id: '1578085069925'
+  alias: Update Octopus Agile Price
+  description: ''
+  trigger:
+  - hours: '*'
+    minutes: '30'
+    platform: time_pattern
+    seconds: '0'
+  - hours: '*'
+    minutes: '0'
+    platform: time_pattern
+    seconds: '0'
+  condition: []
+  action:
+  - data:
+      entity_id: sensor.electricity_cost
+    service: homeassistant.update_entity
+- id: '1589314811003'
+  alias: Kitten heat on
+  description: ''
+  trigger:
+  - below: '22.5'
+    entity_id: sensor.dressing_room_dressing_temp_297
+    for: 00:03:00
+    platform: numeric_state
+  condition: []
+  action:
+  - data: {}
+    entity_id: light.portable_heater_410
+    service: light.turn_on
+- id: '1589322562130'
+  alias: Kitten heat off
+  description: ''
+  trigger:
+  - above: '23.5'
+    entity_id: sensor.dressing_room_dressing_temp_297
+    for: 00:03:00
+    platform: numeric_state
+  condition: []
+  action:
+  - data: {}
+    entity_id: light.portable_heater_410
+    service: light.turn_off
+- id: '1590149622384'
+  alias: Bathroom Accents On
+  description: ''
+  trigger:
+  - entity_id: binary_sensor.bathroom_bathroom_motion_118
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition: []
+  action:
+  - data: {}
+    entity_id: light.bathroom_accent_lights_412
+    service: light.turn_on
+- id: '1590149733152'
+  alias: Bathroom All Off
+  description: ''
+  trigger:
+  - entity_id: binary_sensor.bathroom_bathroom_motion_118
+    for: 00:10:00
+    from: 'on'
+    platform: state
+    to: 'off'
+  condition: []
+  action:
+  - data: {}
+    entity_id: light.bathroom_bathroom_spots_8
+    service: light.turn_off
+  - data: {}
+    entity_id: light.bathroom_accent_lights_412
+    service: light.turn_off
+  - data: {}
+    entity_id: light.bathroom_bathroom_mirror_37
+    service: light.turn_off
+- id: '1590149820014'
+  alias: Bathroom Humidity Off
+  description: ''
+  trigger:
+  - below: '60'
+    entity_id: sensor.bathroom_bathroom_humidity_121
+    for: 00:03:00
+    platform: numeric_state
+  condition: []
+  action:
+  - data: {}
+    entity_id: switch.bathroom_bathroom_fan_11
+    service: switch.turn_off
+- id: '1590446382322'
+  alias: Cool the Floors
+  description: ''
+  trigger:
+  - event_data: {}
+    event_type: ''
+    platform: event
+  condition: []
+  action:
+  - data:
+      entity_id: media_player.office_dot
+      media_content_id: cool the floors
+      media_content_type: routine
+    entity_id: media_player.office_dot
+    service: media_player.play_media
+- id: '1590465764273'
+  alias: Sunset Accents
+  description: ''
+  trigger:
+  - below: '-3'
+    entity_id: sun.sun
+    platform: numeric_state
+    value_template: '{{ state_attr(''sun.sun'', ''elevation'') }}'
+  condition:
+  - after: '15:00:00'
+    before: '23:45:00'
+    condition: time
+  action:
+  - data:
+      brightness_pct: 20
+    entity_id: light.kickboard
+    service: light.turn_on
+- id: '1590466102400'
+  alias: Sunrise Accents
+  description: ''
+  trigger:
+  - above: '3'
+    entity_id: sun.sun
+    platform: numeric_state
+    value_template: '{{ state_attr(''sun.sun'', ''elevation'') }}'
+  condition:
+  - after: 04:00:00
+    before: '10:00:00'
+    condition: time
+  action:
+  - data:
+      brightness_pct: 50
+    entity_id: light.kickboard
+    service: light.turn_on

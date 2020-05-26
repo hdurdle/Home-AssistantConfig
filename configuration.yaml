@@ -1,0 +1,66 @@
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+#homekit:
+
+# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+# http:
+#   base_url: example.duckdns.org:8123
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+bmw_connected_drive:
+  name:
+    username: !secret bmw_username
+    password: !secret bmw_password
+    region: rest_of_world
+
+fibaro:
+  gateways:
+    - url: !secret fibaro_url
+      username: !secret fibaro_username
+      password: !secret fibaro_password
+
+lametric:
+  client_id: !secret lametric_client_id
+  client_secret: !secret lametric_client_secret
+
+notify:
+  name: lametric
+  platform: lametric
+
+climate:
+  - platform: sensibo
+    api_key: !secret sensibo_api
+
+tahoma:
+  username: !secret tahoma_username
+  password: !secret tahoma_password
+  exclude: [BridgeHUEComponent, HueLampHUEComponent, PodComponent]
+
+device_tracker:
+  - platform: mqtt
+    devices:
+      mqtt_howard_iphone: 'room-assistant/device_tracker/bluetooth-classic-8c-86-1e-01-04-5d-tracker/state'
+      mqtt_deb_iphone: 'room-assistant/device_tracker/bluetooth-classic-74-42-8b-3f-6f-f2-tracker/state'
+    payload_home: 'online'
+    payload_not_home: 'offline'
+    source_type: bluetooth
+
+remote:
+  - platform: harmony
+    name: Living Room
+    host: 192.168.1.112
+    activity: Watch Plex
+  - platform: harmony
+    name: Garden Room
+    host: 10.107.0.111
+    activity: Watch Plex
+
+sensor: !include sensors.yaml
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
