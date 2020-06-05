@@ -7,6 +7,13 @@ alexa:
     endpoint: https://api.eu.amazonalexa.com/v3/events
     client_id: !secret alexa_client_id
     client_secret: !secret alexa_client_secret
+    entity_config:
+      cover.bedroom_curtain:
+        name: "curtain"
+        description: "Bedroom Curtain"
+      cover.bedroom_roman:
+        name: "blind"
+        description: "Bedroom Roman Blind"
 
 # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
 # http:
