@@ -1,13 +1,23 @@
 # Configure a default setup of Home Assistant (frontend, api, etc)
 default_config:
 
-#homekit:
+alexa:
+  smart_home:
+    locale: en-GB
+    endpoint: https://api.eu.amazonalexa.com/v3/events
+    client_id: !secret alexa_client_id
+    client_secret: !secret alexa_client_secret
 
 # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
 # http:
 #   base_url: example.duckdns.org:8123
 
-# Text to speech
+recorder:
+  auto_purge: true
+  purge_keep_days: 63
+  db_url: !secret mariadb_connection_url
+
+  # Text to speech
 tts:
   - platform: google_translate
 
@@ -43,10 +53,10 @@ tahoma:
 device_tracker:
   - platform: mqtt
     devices:
-      mqtt_howard_iphone: 'room-assistant/device_tracker/bluetooth-classic-8c-86-1e-01-04-5d-tracker/state'
-      mqtt_deb_iphone: 'room-assistant/device_tracker/bluetooth-classic-74-42-8b-3f-6f-f2-tracker/state'
-    payload_home: 'online'
-    payload_not_home: 'offline'
+      mqtt_howard_iphone: !secret mqtt_howard_iphone_mac
+      mqtt_deb_iphone: !secret mqtt_deb_iphone_mac
+    payload_home: "online"
+    payload_not_home: "offline"
     source_type: bluetooth
 
 remote:
@@ -59,6 +69,14 @@ remote:
     host: 10.107.0.111
     activity: Watch Plex
 
+surepetcare:
+  username: !secret sureflap_username
+  password: !secret sureflap_password
+  pets: [107869]
+  flaps: [113430, 166844, 151961]
+  scan_interval: "01:00:00"
+
+switch: !include switch.yaml
 sensor: !include sensors.yaml
 group: !include groups.yaml
 automation: !include automations.yaml

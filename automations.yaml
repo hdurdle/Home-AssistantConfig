@@ -3,10 +3,19 @@
   description: ''
   trigger:
   - entity_id: group.office_motion
-    for: 00:15:00
+    for: 00:10:00
+    from: 'on'
     platform: state
     to: 'off'
-  condition: []
+  condition:
+  - condition: and
+    conditions:
+    - condition: template
+      value_template: '{{ not is_state(''sensor.deborah_s_iphone_room_presence'',
+        ''office'') }}'
+    - condition: template
+      value_template: '{{ not is_state(''sensor.mjolnir_room_presence'', ''office'')
+        }}'
   action:
   - data: {}
     entity_id: light.office_office_spots_49
@@ -14,6 +23,9 @@
   - data: {}
     entity_id: switch.office_star_wars_frame_399
     service: switch.turn_off
+  - data: {}
+    entity_id: media_player.office
+    service: media_player.media_pause
 - id: '1588887123994'
   alias: Kitchen Motion
   description: ''
@@ -27,8 +39,11 @@
     condition: numeric_state
     entity_id: sensor.kitchen_kitchen_lux_108
   - after: 06:00:00
-    before: '23:45:00'
+    before: '23:00:00'
     condition: time
+  - condition: state
+    entity_id: light.kitchen_kitchen_spots_139
+    state: 'off'
   action:
   - data:
       brightness: 50
@@ -116,7 +131,7 @@
     value_template: '{{ state_attr(''sun.sun'', ''elevation'') }}'
   condition:
   - after: '15:00:00'
-    before: '23:45:00'
+    before: '22:30:00'
     condition: time
   action:
   - data: {}
@@ -183,7 +198,7 @@
   alias: Bathroom Accents On
   description: ''
   trigger:
-  - entity_id: binary_sensor.bathroom_bathroom_motion_118
+  - entity_id: binary_sensor.bathroom_bathroom_motion_418
     from: 'off'
     platform: state
     to: 'on'
@@ -196,8 +211,8 @@
   alias: Bathroom All Off
   description: ''
   trigger:
-  - entity_id: binary_sensor.bathroom_bathroom_motion_118
-    for: 00:10:00
+  - entity_id: binary_sensor.bathroom_bathroom_motion_418
+    for: 00:05:00
     from: 'on'
     platform: state
     to: 'off'
@@ -213,12 +228,12 @@
     entity_id: light.bathroom_bathroom_mirror_37
     service: light.turn_off
 - id: '1590149820014'
-  alias: Bathroom Humidity Off
+  alias: Bathroom Humidity Fan Off
   description: ''
   trigger:
-  - below: '60'
-    entity_id: sensor.bathroom_bathroom_humidity_121
-    for: 00:03:00
+  - below: '55'
+    entity_id: sensor.bathroom_bathroom_humidity_421
+    for: 00:05:00
     platform: numeric_state
   condition: []
   action:
@@ -254,7 +269,7 @@
     condition: time
   action:
   - data:
-      brightness_pct: 20
+      brightness_pct: 10
     entity_id: light.kickboard
     service: light.turn_on
 - id: '1590466102400'
@@ -274,3 +289,29 @@
       brightness_pct: 50
     entity_id: light.kickboard
     service: light.turn_on
+- id: '1590658718292'
+  alias: Rack Cooling
+  description: ''
+  trigger:
+  - above: '22'
+    entity_id: sensor.rack_rack_temperature_155
+    for: 00:03:00
+    platform: numeric_state
+  condition: []
+  action:
+  - data: {}
+    entity_id: climate.rack
+    service: climate.turn_on
+- id: '1590707448475'
+  alias: Rack cold enough
+  description: ''
+  trigger:
+  - below: '18'
+    entity_id: sensor.rack_rack_temperature_155
+    for: 00:02:00
+    platform: numeric_state
+  condition: []
+  action:
+  - data: {}
+    entity_id: climate.rack
+    service: climate.turn_off

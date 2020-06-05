@@ -3,3 +3,4 @@ office_motion:
   entities:
     - binary_sensor.office_office_motion_288
     - binary_sensor.office_desk_motion_118
+    - binary_sensor.office_monitor_motion_434

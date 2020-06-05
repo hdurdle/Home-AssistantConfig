@@ -1,7 +1,17 @@
+- platform: template
+  sensors:
+    last_alexa:
+      entity_id:
+        - media_player.living_room_dot
+        - media_player.bedroom_dot
+        - media_player.garden_room_dot
+      value_template: >
+        {{ states.media_player | selectattr('attributes.last_called','eq',True) | map(attribute='entity_id') | first }}
+
 - platform: rest
   name: Energy
   resource: !secret powerwall_aggregates_url
-  value_template: '{{ value_json.load.instant_power / 1000 }}'
+  value_template: "{{ value_json.load.instant_power / 1000 }}"
   unit_of_measurement: kW
   method: GET
   verify_ssl: false
@@ -15,19 +25,19 @@
   sensors:
     energy_solar_instant_power:
       friendly_name: Solar
-      value_template: '{{ (states.sensor.energy.attributes.solar.instant_power / 1000 | float) | round(3) }}'
+      value_template: "{{ (states.sensor.energy.attributes.solar.instant_power / 1000 | float) | round(3) }}"
       unit_of_measurement: kW
     energy_load_instant_power:
       friendly_name: House
-      value_template: '{{ (states.sensor.energy.attributes.load.instant_power / 1000 | float) | round(3) }}'
+      value_template: "{{ (states.sensor.energy.attributes.load.instant_power / 1000 | float) | round(3) }}"
       unit_of_measurement: kW
     energy_battery_instant_power:
       friendly_name: Battery
-      value_template: '{{ (states.sensor.energy.attributes.battery.instant_power / 1000 | float) | round(3) }}'
+      value_template: "{{ (states.sensor.energy.attributes.battery.instant_power / 1000 | float) | round(3) }}"
       unit_of_measurement: kWh
     energy_grid_instant_power:
       friendly_name: Grid
-      value_template: '{{ (states.sensor.energy.attributes.site.instant_power / 1000 | float) | round(3) }}'
+      value_template: "{{ (states.sensor.energy.attributes.site.instant_power / 1000 | float) | round(3) }}"
       unit_of_measurement: kWh
 
 - platform: rest
@@ -35,21 +45,34 @@
   resource: !secret powerwall_soe_url
   method: GET
   verify_ssl: false
-  value_template: '{{ value_json.percentage | float | round(2) }}'
-  unit_of_measurement: '%'
+  value_template: "{{ value_json.percentage | float | round(2) }}"
+  unit_of_measurement: "%"
 
 - platform: command_line
   name: electricity_cost
   scan_interval: 43200
   command: curl \"https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-H/standard-unit-rates/?period_from={{ now().year }}-{{ now().month }}-{{ now().day }}T{{ now().hour }}:{% if now().minute <30 %}00{% else %}30{% endif %}&period_to={{ now().year }}-{{ now().month }}-{% if (now().hour == 23) and (now().minute >=30) %}{{ now().day+1 }}{% else %}{{ now().day }}{% endif %}T{% if (now().hour == 23) and (now().minute >=30) %}00{% elif now().minute >=30 %}{{ now().hour+1}}{% else %}{{ now().hour}}{% endif %}:{% if now().minute >=30 %}00{% else %}30{% endif %}\"
-  value_template: '{{ (value_json.results[0].value_inc_vat) | round(2) }}'
-  unit_of_measurement: 'p/KWH'
+  value_template: "{{ (value_json.results[0].value_inc_vat) | round(2) }}"
+  unit_of_measurement: "p/KWH"
 
 - platform: template
   sensors:
     living_room:
       value_template: '{{ state_attr("remote.living_room", "current_activity") }}'
-      friendly_name: 'Living Room'
+      friendly_name: "Living Room"
     garden_room:
       value_template: '{{ state_attr("remote.garden_room", "current_activity") }}'
-      friendly_name: 'Garden Room'
+      friendly_name: "Garden Room"
+
+- platform: template
+  sensors:
+    low_battery:
+      friendly_name: "Low Battery"
+      value_template: >
+        {%- set threshold = 40 -%}
+        {%- set domains = ['light', 'switch', 'sensor', 'zwave', 'lock'] -%}
+        {%- for domain in domains -%}
+        {%- for item in states[domain] if (not "Low Battery" in item.name) and ((item.attributes.battery_level is defined and item.attributes['battery_level'] | int < threshold) or ("battery" in item.name | lower and ((item.state | int < threshold and item.state|int != 0) or item.state | lower == "low" or item.state | lower == "unknown"))) -%}
+            {{ item.attributes.friendly_name }}{%- if not loop.last %}, {% endif -%}
+        {%- endfor -%}
+        {%- endfor -%}
