@@ -1,23 +1,13 @@
 # Configure a default setup of Home Assistant (frontend, api, etc)
 default_config:
 
-alexa:
-  smart_home:
-    locale: en-GB
-    endpoint: https://api.eu.amazonalexa.com/v3/events
-    client_id: !secret alexa_client_id
-    client_secret: !secret alexa_client_secret
-    entity_config:
-      cover.bedroom_curtain:
-        name: "curtain"
-        description: "Bedroom Curtain"
-      cover.bedroom_roman:
-        name: "blind"
-        description: "Bedroom Roman Blind"
+homeassistant:
+  customize: !include customize.yaml
 
-# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
-# http:
-#   base_url: example.duckdns.org:8123
+logger:
+  default: critical
+  logs:
+    homeassistant.components.command_line.sensor: debug
 
 recorder:
   auto_purge: true
@@ -33,6 +23,47 @@ bmw_connected_drive:
     username: !secret bmw_username
     password: !secret bmw_password
     region: rest_of_world
+
+input_datetime:
+  i8_purchase:
+    name: i8 Purchase
+    has_date: true
+    has_time: false
+    initial: "2019-04-18"
+
+media_player:
+  - platform: androidtv
+    name: Bedroom Shield
+    host: 192.168.1.150
+  - platform: androidtv
+    name: Living Room Shield
+    host: 192.168.1.107
+    state_detection_rules:
+      "com.plexapp.android":
+        - "paused":
+            "media_session_state": 3 # this indentation is important!
+            "wake_lock_size": 1 # this indentation is important!
+        - "playing":
+            "media_session_state": 3 # this indentation is important!
+        - "standby"
+      "com.google.android.youtube.tv":
+        - "paused":
+            "media_session_state": 3 # this indentation is important!
+            "wake_lock_size": 1 # this indentation is important!
+        - "playing":
+            "media_session_state": 3 # this indentation is important!
+        - "standby"
+
+neato:
+  username: !secret neato_username
+  password: !secret neato_password
+
+# vacuum:
+#   - platform: eufyrobovac
+#     name: Kreacher
+#     ip_address: 10.107.0.188
+#     username: !secret eufy_username
+#     password: !secret eufy_password
 
 fibaro:
   gateways:
@@ -52,15 +83,11 @@ climate:
   - platform: sensibo
     api_key: !secret sensibo_api
 
-tahoma:
-  username: !secret tahoma_username
-  password: !secret tahoma_password
-  exclude: [BridgeHUEComponent, HueLampHUEComponent, PodComponent]
-
 device_tracker:
   - platform: mqtt
     devices:
       mqtt_howard_iphone: !secret mqtt_howard_iphone_mac
+      mqtt_howard_watch: !secret mqtt_howard_watch_mac
       mqtt_deb_iphone: !secret mqtt_deb_iphone_mac
     payload_home: "online"
     payload_not_home: "offline"
@@ -79,10 +106,22 @@ remote:
 surepetcare:
   username: !secret sureflap_username
   password: !secret sureflap_password
-  pets: [107869]
   flaps: [113430, 166844, 151961]
-  scan_interval: "01:00:00"
+  pets: []
+  scan_interval: "00:30:00"
 
+cover:
+  platform: opengarage
+  covers:
+    garage:
+      host: 10.107.0.173
+      device_key: opendoor
+      name: garagedoor
+
+input_select: !include input_select.yaml
+binary_sensor: !include binary_sensors.yaml
+camera: !include cameras.yaml
+alexa: !include alexa.yaml
 switch: !include switch.yaml
 sensor: !include sensors.yaml
 group: !include groups.yaml

@@ -1,0 +1,85 @@
+smart_home:
+  locale: en-GB
+  endpoint: https://api.eu.amazonalexa.com/v3/events
+  client_id: !secret alexa_client_id
+  client_secret: !secret alexa_client_secret
+  filter:
+    exclude_domains:
+      - media_player
+      - automation
+      - climate
+      - device_tracker
+      - group
+      - person
+      - remote
+      - scene
+      - switch
+    include_entities:
+      - switch.office_star_wars_frame_399
+      - switch.utility_utility_fan_81
+      - switch.bathroom_bathroom_fan_11
+      - switch.nowplaying_now_playing
+      - switch.garageaudio_garage_audio
+      - switch.bedleft_bed_left
+      - group.garage
+      - switch.trees_trees
+    exclude_entities:
+      - binary_sensor.bathroom_bathroom_motion_418
+      - binary_sensor.sauron_motion_428
+      - binary_sensor.dressing_room_dressing_motion_296
+      - binary_sensor.hall_hall_sensor_112
+      - binary_sensor.kitchen_kitchen_motion_106
+      - binary_sensor.landing_landing_motion_281
+      - binary_sensor.office_desk_motion_118
+      - binary_sensor.office_monitor_motion_434
+      - binary_sensor.office_office_motion_288
+      - binary_sensor.pantry_pantry_motion_166
+      - binary_sensor.rack_rack_motion_154
+      - binary_sensor.i8_condition_based_services
+      - binary_sensor.i8_charging_status
+      - binary_sensor.pet_flap_garage_door_connectivity
+      - binary_sensor.pet_flap_garden_room_connectivity
+      - binary_sensor.pet_flap_utility_connectivity
+      - binary_sensor.hub_twin_cottage
+      - binary_sensor.updater
+      - binary_sensor.i8_lights_parking
+      - binary_sensor.i8_door_lock_state
+      - sensor.baldur_battery_state
+      - sensor.bedroom_cluster_leader
+      - sensor.bedroom_cluster_size
+      - sensor.deborah_s_iphone_battery_state
+      - sensor.deborah_s_iphone_room_presence
+      - sensor.energy
+      - sensor.energy_battery_instant_power
+      - sensor.energy_grid_instant_power
+      - sensor.energy_load_instant_power
+      - sensor.energy_solar_instant_power
+      - sensor.flashforge_status
+      - sensor.garden_room
+      - sensor.hacs
+  entity_config:
+    script.1591789399368:
+      name: "Reboot Thermogroup"
+    binary_sensor.i8_lids:
+      name: "i8 Boot"
+    lock.i8_lock:
+      name: "i8"
+    cover.bedroom_curtain:
+      name: "Bedroom Curtain"
+    cover.bedroom_roman:
+      name: "Bedroom Blind"
+    switch.office_star_wars_frame_399:
+      display_categories: LIGHT
+    switch.nowplaying_now_playing:
+      name: "Now Playing"
+    switch.garageaudio_garage_audio:
+      name: "Garage Audio"
+    cover.garagedoor:
+      name: "Garage Door"
+      display_categories: EXTERIOR_BLIND
+    switch.trees_trees:
+      name: "Trees"
+      display_categories: LIGHT
+    switch.bedleft_bed_left:
+      name: "Bedside Lamp"
+      display_categories: LIGHT

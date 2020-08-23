@@ -27,7 +27,7 @@
     entity_id: media_player.office
     service: media_player.media_pause
 - id: '1588887123994'
-  alias: Kitchen Motion
+  alias: Kitchen Lights if Dark
   description: ''
   trigger:
   - entity_id: binary_sensor.kitchen_kitchen_motion_106
@@ -49,11 +49,7 @@
       brightness: 50
     entity_id: light.kitchen_kitchen_spots_139
     service: light.turn_on
-  - brightness_pct: 50
-    device_id: 4bb22d5782af41f3b96264fb6aa11f88
-    domain: light
-    entity_id: light.kickboard
-    type: turn_on
+  mode: single
 - id: '1588887264693'
   alias: Dressing Room motion on
   description: ''
@@ -109,14 +105,11 @@
   description: ''
   trigger:
   - entity_id: binary_sensor.dressing_room_dressing_motion_296
-    for: 00:15:00
+    for: 00:10:00
     from: 'on'
     platform: state
     to: 'off'
-  condition:
-  - after: 01:00:00
-    before: 00:06:00
-    condition: time
+  condition: []
   action:
   - data: {}
     entity_id: light.dressing_room_wardrobes_22
@@ -125,13 +118,13 @@
   alias: Garden Lights Sunset
   description: ''
   trigger:
-  - below: '-3'
+  - below: '1.5'
     entity_id: sun.sun
     platform: numeric_state
     value_template: '{{ state_attr(''sun.sun'', ''elevation'') }}'
   condition:
-  - after: '15:00:00'
-    before: '22:30:00'
+  - after: '16:00:00'
+    before: '22:00:00'
     condition: time
   action:
   - data: {}
@@ -143,7 +136,6 @@
   trigger:
   - entity_id: binary_sensor.kitchen_kitchen_motion_106
     for: 00:15:00
-    from: 'on'
     platform: state
     to: 'off'
   condition: []
@@ -168,32 +160,6 @@
   - data:
       entity_id: sensor.electricity_cost
     service: homeassistant.update_entity
-- id: '1589314811003'
-  alias: Kitten heat on
-  description: ''
-  trigger:
-  - below: '22.5'
-    entity_id: sensor.dressing_room_dressing_temp_297
-    for: 00:03:00
-    platform: numeric_state
-  condition: []
-  action:
-  - data: {}
-    entity_id: light.portable_heater_410
-    service: light.turn_on
-- id: '1589322562130'
-  alias: Kitten heat off
-  description: ''
-  trigger:
-  - above: '23.5'
-    entity_id: sensor.dressing_room_dressing_temp_297
-    for: 00:03:00
-    platform: numeric_state
-  condition: []
-  action:
-  - data: {}
-    entity_id: light.portable_heater_410
-    service: light.turn_off
 - id: '1590149622384'
   alias: Bathroom Accents On
   description: ''
@@ -202,7 +168,10 @@
     from: 'off'
     platform: state
     to: 'on'
-  condition: []
+  condition:
+  - after: 06:00:00
+    before: '23:45:00'
+    condition: time
   action:
   - data: {}
     entity_id: light.bathroom_accent_lights_412
@@ -212,7 +181,7 @@
   description: ''
   trigger:
   - entity_id: binary_sensor.bathroom_bathroom_motion_418
-    for: 00:05:00
+    for: 00:10:00
     from: 'on'
     platform: state
     to: 'off'
@@ -231,15 +200,16 @@
   alias: Bathroom Humidity Fan Off
   description: ''
   trigger:
-  - below: '55'
-    entity_id: sensor.bathroom_bathroom_humidity_421
-    for: 00:05:00
-    platform: numeric_state
+  - entity_id: sensor.bathroom_humidity_high
+    for: 00:03:00
+    platform: state
+    to: 'False'
   condition: []
   action:
   - data: {}
     entity_id: switch.bathroom_bathroom_fan_11
     service: switch.turn_off
+  mode: single
 - id: '1590446382322'
   alias: Cool the Floors
   description: ''
@@ -259,7 +229,7 @@
   alias: Sunset Accents
   description: ''
   trigger:
-  - below: '-3'
+  - below: '0'
     entity_id: sun.sun
     platform: numeric_state
     value_template: '{{ state_attr(''sun.sun'', ''elevation'') }}'
@@ -270,6 +240,10 @@
   action:
   - data:
       brightness_pct: 10
+      rgb_color:
+      - 255
+      - 159
+      - 0
     entity_id: light.kickboard
     service: light.turn_on
 - id: '1590466102400'
@@ -286,11 +260,15 @@
     condition: time
   action:
   - data:
-      brightness_pct: 50
+      brightness_pct: 25
+      rgb_color:
+      - 255
+      - 159
+      - 0
     entity_id: light.kickboard
     service: light.turn_on
 - id: '1590658718292'
-  alias: Rack Cooling
+  alias: Rack Temp  High
   description: ''
   trigger:
   - above: '22'
@@ -303,15 +281,577 @@
     entity_id: climate.rack
     service: climate.turn_on
 - id: '1590707448475'
-  alias: Rack cold enough
+  alias: Rack Temp and Humidity Low
   description: ''
   trigger:
-  - below: '18'
+  - below: '22'
     entity_id: sensor.rack_rack_temperature_155
     for: 00:02:00
     platform: numeric_state
-  condition: []
+  condition:
+  - below: '55'
+    condition: numeric_state
+    entity_id: sensor.rack_rack_humidity_157
   action:
   - data: {}
     entity_id: climate.rack
     service: climate.turn_off
+- id: '1591609534326'
+  alias: Power is Expensive
+  description: ''
+  trigger:
+  - above: '12'
+    entity_id: sensor.electricity_cost
+    platform: numeric_state
+    value_template: '{{states.sensor.electricity_cost.state}}'
+  condition: []
+  action:
+  - data:
+      brightness_pct: 25
+      color_name: red
+      transition: 5
+    entity_id: light.kickboard
+    service: light.turn_on
+- id: '1591609594206'
+  alias: Power is Cheap(er)
+  description: ''
+  trigger:
+  - below: '12'
+    entity_id: sensor.electricity_cost
+    platform: numeric_state
+    value_template: '{{states.sensor.electricity_cost.state}}'
+  condition: []
+  action:
+  - data:
+      brightness_pct: 25
+      rgb_color:
+      - 255
+      - 159
+      - 0
+      transition: 5
+    entity_id: light.kickboard
+    service: light.turn_on
+- id: '1591774767394'
+  alias: Volume Resets
+  description: ''
+  trigger:
+  - at: 06:30:00
+    platform: time
+  condition: []
+  action:
+  - data: {}
+    entity_id: script.1591724550635
+    service: script.turn_on
+  - data: {}
+    entity_id: script.1591774489716
+    service: script.turn_on
+- id: '1591791205845'
+  alias: Nightly UFH Reboot
+  description: ''
+  trigger:
+  - at: 01:13:00
+    platform: time
+  condition: []
+  action:
+  - data: {}
+    entity_id: script.1591789399368
+    service: script.turn_on
+- id: '1591865738858'
+  alias: Office secondaries on
+  description: ''
+  trigger:
+  - entity_id: light.office_office_spots_49
+    platform: state
+    to: 'on'
+  condition: []
+  action:
+  - data: {}
+    entity_id: switch.office_star_wars_frame_399
+    service: switch.turn_on
+- id: '1591865790715'
+  alias: Office secondaries off
+  description: ''
+  trigger:
+  - entity_id: light.office_office_spots_49
+    platform: state
+    to: 'off'
+  condition: []
+  action:
+  - data: {}
+    entity_id: switch.office_star_wars_frame_399
+    service: switch.turn_off
+- id: '1591918064904'
+  alias: Rack Humidity High
+  description: ''
+  trigger:
+  - above: '55'
+    entity_id: sensor.rack_rack_humidity_157
+    for: 00:01:00
+    platform: numeric_state
+  condition: []
+  action:
+  - data:
+      entity_id: climate.rack
+      humidity: 50
+    entity_id: climate.rack
+    service: climate.set_humidity
+- id: '1592316292544'
+  alias: Utility Accents On
+  description: ''
+  trigger:
+  - entity_id: binary_sensor.utility_utility_motion_440
+    platform: state
+    to: 'on'
+  condition:
+  - after: 06:00:00
+    before: '23:59:00'
+    condition: time
+  action:
+  - data: {}
+    entity_id: light.utility_utility_accents_446
+    service: light.turn_on
+- id: '1592493332663'
+  alias: Utility Empty
+  description: ''
+  trigger:
+  - entity_id: binary_sensor.utility_utility_motion_440
+    for: 00:05:00
+    platform: state
+    to: 'off'
+  condition: []
+  action:
+  - data: {}
+    entity_id: light.utility_utility_accents_446
+    service: light.turn_off
+  - data: {}
+    entity_id: light.utility_utility_spots_42
+    service: light.turn_off
+  - data: {}
+    entity_id: light.utility_utility_mirror_83
+    service: light.turn_off
+- id: '1592493544443'
+  alias: Utility Secondaries On
+  description: ''
+  trigger:
+  - entity_id: light.utility_utility_spots_42
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition: []
+  action:
+  - data:
+      brightness_pct: 100
+    entity_id: light.utility_utility_mirror_83
+    service: light.turn_on
+- id: '1592493583740'
+  alias: Utility Secondaries Off
+  description: ''
+  trigger:
+  - entity_id: light.utility_utility_spots_42
+    from: 'on'
+    platform: state
+    to: 'off'
+  condition: []
+  action:
+  - data: {}
+    entity_id: light.utility_utility_mirror_83
+    service: light.turn_off
+- id: '1592821204215'
+  alias: Tumble Finished
+  description: ''
+  trigger:
+  - below: '50'
+    entity_id: sensor.tumble_energy_power
+    for: 00:05:00
+    platform: numeric_state
+  condition: []
+  action:
+  - data:
+      data:
+        method: speak
+        type: announce
+      message: The tumble drier has finished.
+      target:
+      - media_player.office_dot
+      - media_player.landing_dot
+      - media_player.hall_dot
+      - media_player.bedroom_dot
+    service: notify.alexa_media
+- id: '1592905702510'
+  alias: Bathroom is Creepy
+  description: ''
+  trigger:
+  - entity_id: binary_sensor.bathroom_bathroom_motion_418
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition:
+  - after: 01:00:00
+    before: 05:00:00
+    condition: time
+  action:
+  - delay: 00:00:05
+  - data:
+      data:
+        method: speak
+        type: announce
+      message: "<amazon:effect name='whispered'>{{ [ \"I'm watching you pee.\", \"\
+        Your hair smells nice.\", \"Stop touching yourself.\", \"I can see your bum.\"\
+        , \"I wish I had hands so I could touch you.\" ] | random }}</amazon:effect>\
+        \  \n"
+      target:
+      - media_player.bathroom_dot
+    service: notify.alexa_media
+- id: '1592912726773'
+  alias: 'Dishwasher: Set active when power detected'
+  trigger:
+  - above: '10'
+    entity_id: sensor.dishwasher_energy_apparentpower
+    platform: numeric_state
+  condition:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: input_select.dishwasher_status
+      state: Dirty
+    - condition: state
+      entity_id: input_select.dishwasher_status
+      state: Clean
+    - condition: state
+      entity_id: input_select.dishwasher_status
+      state: Drying
+  action:
+  - data:
+      entity_id: input_select.dishwasher_status
+      option: Running
+    service: input_select.select_option
+- id: '1592912740774'
+  alias: 'Dishwasher: Set drying when power drops'
+  trigger:
+  - below: '10'
+    entity_id: sensor.dishwasher_energy_apparentpower
+    platform: numeric_state
+  condition:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: input_select.dishwasher_status
+      state: Running
+  action:
+  - data:
+      entity_id: input_select.dishwasher_status
+      option: Drying
+    service: input_select.select_option
+- id: '1592912752774'
+  alias: 'Dishwasher: Set clean'
+  trigger:
+  - entity_id: input_select.dishwasher_status
+    for: 0:15:00
+    platform: state
+    to: Drying
+  condition:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: input_select.dishwasher_status
+      state: Drying
+  action:
+  - data:
+      entity_id: input_select.dishwasher_status
+      option: Clean
+    service: input_select.select_option
+- id: '1592912769773'
+  alias: 'Dishwasher: Set dirty when power off'
+  trigger:
+  - below: '1'
+    entity_id: sensor.dishwasher_energy_apparentpower
+    platform: numeric_state
+  condition:
+  - condition: and
+    conditions:
+    - below: '1'
+      condition: numeric_state
+      entity_id: sensor.dishwasher_energy_apparentpower
+    - condition: or
+      conditions:
+      - condition: state
+        entity_id: input_select.dishwasher_status
+        state: Clean
+      - condition: state
+        entity_id: input_select.dishwasher_status
+        state: Drying
+  action:
+  - data:
+      entity_id: input_select.dishwasher_status
+      option: Dirty
+    service: input_select.select_option
+- id: '1592949311686'
+  alias: Now Playing On
+  description: ''
+  trigger:
+  - entity_id: media_player.living_room_shield
+    platform: state
+    to: playing
+  condition:
+  - condition: state
+    entity_id: light.living_room_living_room_wall_64
+    state: 'on'
+  action:
+  - data:
+      brightness_pct: 25
+    entity_id: light.living_room_side_lamp_345
+    service: light.turn_on
+  - data:
+      brightness_pct: 25
+    entity_id: light.living_room_living_room_wall_64
+    service: light.turn_on
+- id: '1592949878087'
+  alias: Now Playing Off
+  description: ''
+  trigger:
+  - entity_id: media_player.living_room_shield
+    platform: state
+    to: paused
+  - entity_id: media_player.living_room_shield
+    platform: state
+    to: standby
+  condition: []
+  action:
+  - data: {}
+    entity_id: switch.nowplaying_now_playing
+    service: switch.turn_off
+- id: '1594041906830'
+  alias: Make tea!
+  description: ''
+  trigger:
+  - minutes: /60
+    platform: time_pattern
+  condition:
+  - after: 08:30:00
+    before: '18:00:00'
+    condition: time
+  - condition: state
+    entity_id: person.deb
+    state: home
+  - condition: state
+    entity_id: person.howard
+    state: home
+  action:
+  - data:
+      data:
+        method: speak
+        type: announce
+      message: It is time to make Deb a cup of tea.
+      target:
+      - media_player.office_dot
+      - media_player.landing_dot
+      - media_player.hall_dot
+      - media_player.bedroom_dot
+      - media_player.kitchen_dot
+    service: notify.alexa_media
+- id: '1594159089386'
+  alias: open the garage door
+  description: ''
+  trigger:
+  - at: 06:30:00
+    platform: time
+  condition: []
+  action:
+  - entity_id: cover.garagedoor
+    service: cover.open_cover
+- id: '1594994621989'
+  alias: 'Tumble: Set active when power detected'
+  trigger:
+  - above: '10'
+    entity_id: sensor.tumble_energy_apparentpower
+    platform: numeric_state
+  condition:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: input_select.tumble_status
+      state: Wet
+    - condition: state
+      entity_id: input_select.tumble_status
+      state: Dry
+  action:
+  - data:
+      entity_id: input_select.tumble_status
+      option: Running
+    service: input_select.select_option
+- id: '1594994627588'
+  alias: 'tumble: Set dry when power drops'
+  trigger:
+  - below: '10'
+    entity_id: sensor.tumble_energy_apparentpower
+    platform: numeric_state
+  condition:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: input_select.tumble_status
+      state: Running
+  action:
+  - data:
+      entity_id: input_select.tumble_status
+      option: Dry
+    service: input_select.select_option
+- id: '1594994638427'
+  alias: 'tumble: Set wet when power off'
+  trigger:
+  - below: '1'
+    entity_id: sensor.tumble_energy_apparentpower
+    platform: numeric_state
+  condition:
+  - condition: and
+    conditions:
+    - below: '1'
+      condition: numeric_state
+      entity_id: sensor.tumble_energy_apparentpower
+    - condition: state
+      entity_id: input_select.tumble_status
+      state: Dry
+  action:
+  - data:
+      entity_id: input_select.tumble_status
+      option: Wet
+    service: input_select.select_option
+- id: '1594996393929'
+  alias: 'washer: Set active when power detected'
+  trigger:
+  - above: '10'
+    entity_id: sensor.washer_energy_apparentpower
+    platform: numeric_state
+  condition:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: input_select.washer_status
+      state: Dirty
+    - condition: state
+      entity_id: input_select.washer_status
+      state: Clean
+  action:
+  - data:
+      entity_id: input_select.washer_status
+      option: Running
+    service: input_select.select_option
+- id: '1594996397887'
+  alias: 'washer: Set drying when power drops'
+  trigger:
+  - below: '10'
+    entity_id: sensor.washer_energy_apparentpower
+    platform: numeric_state
+  condition:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: input_select.washer_status
+      state: Running
+  action:
+  - data:
+      entity_id: input_select.washer_status
+      option: Clean
+    service: input_select.select_option
+- id: '1594996405480'
+  alias: 'washer: Set dirty when power off'
+  trigger:
+  - below: '1'
+    entity_id: sensor.washer_energy_apparentpower
+    platform: numeric_state
+  condition:
+  - condition: and
+    conditions:
+    - below: '1'
+      condition: numeric_state
+      entity_id: sensor.washer_energy_apparentpower
+    - condition: state
+      entity_id: input_select.washer_status
+      state: Clean
+  action:
+  - data:
+      entity_id: input_select.washer_status
+      option: Dirty
+    service: input_select.select_option
+- id: '1596104728963'
+  alias: Volume Quiet Mode
+  description: ''
+  trigger:
+  - at: 01:00
+    platform: time
+  condition: []
+  action:
+  - data: {}
+    entity_id: script.reset_dot_volume_night_mode
+    service: script.turn_on
+  mode: single
+- id: '1596389822163'
+  alias: Close bedroom in full sun
+  description: ''
+  trigger:
+  - entity_id: binary_sensor.sun_azimuth_bedroom
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: binary_sensor.sun_elevation
+    state: 'on'
+  - condition: template
+    value_template: '{{ states.climate.bedroom_aircon.attributes.current_temperature
+      > 20 }}'
+  action:
+  - data: {}
+    entity_id: cover.bedroom_curtain
+    service: cover.close_cover
+  - data: {}
+    entity_id: climate.bedroom_aircon
+    service: climate.turn_on
+  mode: single
+- id: '1596389892228'
+  alias: Open bedroom when sun goes
+  description: ''
+  trigger:
+  - entity_id: binary_sensor.sun_azimuth_bedroom
+    from: 'on'
+    platform: state
+    to: 'off'
+  condition: []
+  action:
+  - data: {}
+    entity_id: cover.bedroom_curtain
+    service: cover.open_cover
+  mode: single
+- id: '1596895649823'
+  alias: Bathroom is humid
+  description: ''
+  trigger:
+  - entity_id: sensor.bathroom_humidity_high
+    for: 00:01:00
+    platform: state
+    to: 'True'
+  condition: []
+  action:
+  - data: {}
+    entity_id: switch.bathroom_bathroom_fan_11
+    service: switch.turn_on
+  mode: single
+- id: '1597424066722'
+  alias: Toggle Bed Lamp Socket
+  description: ''
+  trigger:
+  - device_id: 77e6b5b4a7764376862a9b1c779101f3
+    domain: switch
+    entity_id: switch.bedleft_bed_left
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 3
+    platform: device
+    type: turned_off
+  condition: []
+  action:
+  - data: {}
+    entity_id: switch.bedleft_bed_left
+    service: switch.turn_on
+  mode: single
