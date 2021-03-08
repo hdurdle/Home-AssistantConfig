@@ -1,0 +1,5 @@
+light:
+  - platform: nanoleaf
+    name: nanoleaf
+    host: 192.168.1.169
+    token: CiZsFFfTMsIB5encitG7SKyMymULY6GA

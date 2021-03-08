@@ -1,0 +1,29 @@
+binary_sensor:
+  - name: Drive Person
+    platform: mqtt
+    state_topic: "frigate/drive/person"
+    device_class: motion
+    availability_topic: "frigate/available"
+  - name: Front Door Person
+    platform: mqtt
+    state_topic: "frigate/frontdoor/person"
+    device_class: motion
+    availability_topic: "frigate/available"
+  - name: Landing Cat
+    platform: mqtt
+    state_topic: "frigate/landing/cat"
+    device_class: motion
+    availability_topic: "frigate/available"
+  - name: "sun azimuth bedroom"
+    platform: threshold
+    upper: 260
+    lower: 175
+    entity_id: sensor.sun_azimuth
+  - name: "sun elevation"
+    platform: threshold
+    upper: 30
+    entity_id: sensor.sun_elevation
+
+  - name: Workday
+    platform: workday
+    country: GB

@@ -1,0 +1,5 @@
+fibaro:
+  gateways:
+    - url: !secret fibaro_url
+      username: !secret fibaro_username
+      password: !secret fibaro_password

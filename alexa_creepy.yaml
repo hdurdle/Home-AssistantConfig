@@ -1,8 +1,0 @@
->
-      <amazon:effect name='whispered'>{{ [
-      "I'm watching you pee.",
-      "Your hair smells nice.",
-      "Stop touching yourself.",
-      "I can see your bum.",
-      "I wish I had hands so I could touch you."
-      ] | random }}</amazon:effect>

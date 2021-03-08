@@ -10,17 +10,18 @@
   alias: Reset Sonos Volume
   sequence:
   - data:
-      volume_level: 0.18
+      volume_level: 0.12
     entity_id: media_player.bathroom,media_player.bedroom,media_player.dressing_room,media_player.garage,media_player.garden_bottom,media_player.garden_room,media_player.garden_top,media_player.hall,media_player.landing,media_player.living_room,media_player.utility
     service: media_player.volume_set
   - data:
-      volume_level: 0.24
+      volume_level: 0.12
     entity_id: media_player.kitchen
     service: media_player.volume_set
   - data:
-      volume_level: 0.2
+      volume_level: 0.12
     entity_id: media_player.office
     service: media_player.volume_set
+  mode: single
 reset_dot_volume_night_mode:
   alias: Reset Dot Volume Night Mode
   mode: single
@@ -29,3 +30,36 @@ reset_dot_volume_night_mode:
       volume_level: 0.2
     entity_id: media_player.bathroom_dot,media_player.bedroom_dot,media_player.dining_dot,media_player.dressing_room_dot,media_player.garage_dot,media_player.garden_room_dot,media_player.hall_dot,media_player.kitchen_dot,media_player.landing_dot,media_player.living_room_dot,media_player.office_dot,media_player.utility_dot
     service: media_player.volume_set
+'1605100490147':
+  alias: Sonos Morning Group
+  sequence:
+  - service: sonos.join
+    data:
+      master: media_player.office
+      entity_id: media_player.landing, media_player.hall, media_player.kitchen
+    entity_id: media_player.landing, media_player.hall, media_player.kitchen
+  mode: single
+sonos_power_off:
+  alias: Sonos Power Off
+  sequence:
+  - service: switch.turn_off
+    data: {}
+    entity_id: switch.sonos_dressing_room, switch.sonos_bathroom
+  mode: single
+doorbell_and_announce:
+  alias: Doorbell and Announce
+  sequence:
+  - service: media_player.play_media
+    data:
+      entity_id: media_player.office_dot
+      media_content_id: amzn_sfx_doorbell_chime_01
+      media_content_type: sound
+  - service: notify.alexa_media
+    data:
+      data:
+        method: speak
+        type: announce
+      message: There's somebody at the door!
+      target:
+      - media_player.office_dot
+  mode: single

@@ -14,11 +14,8 @@ sensor.tumble_state:
   icon: mdi:tumble-dryer
 
 cover.garagedoor:
-  icon: mdi:garage
   device_class: shutter
   friendly_name: Garage Door
-sensor.garage_car_present:
-  icon: mdi:car
 sensor.i8_charging_status:
   friendly_name: Charging Status
 binary_sensor.i8_lids:

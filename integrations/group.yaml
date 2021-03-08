@@ -1,0 +1,64 @@
+group:
+  office_motion:
+    name: Office Motion Sensors
+    entities:
+      - binary_sensor.office_office_motion_288
+      - binary_sensor.office_desk_motion_118
+
+  garage:
+    name: Garage
+    entities:
+      - cover.garagedoor
+      - sensor.garage_status
+      - sensor.garage_car_present
+
+  upstairs:
+    name: Upstairs
+    entities:
+      - light.bedroom_bedroom_light_59
+      - light.bedroom_headboard_311
+      - light.bathroom_bathroom_spots_8
+      - light.bathroom_bathroom_mirror_37
+      - light.bathroom_accent_lights_412
+      - light.dressing_room_wardrobes_22
+      - light.landing_landing_spots_151
+      - light.landing_pendant_224
+      - light.office_office_spots_49
+      - switch.office_star_wars_frame_399
+      - switch.bathroom_bathroom_fan_11
+      - switch.bedleft_bed_left
+      - switch.guest_lamp
+
+  downstairs:
+    name: Downstairs
+    entities:
+      - light.hall_hall_spots_146
+      - light.living_room_living_room_wall_64
+      - light.nanoleaf
+      - switch.xmas
+      - light.living_room_side_lamp_345
+      - light.living_room_globe_lamp_464
+      - light.kitchen_kitchen_spots_139
+      - light.pantry_pantry_light_163
+      - light.dining_room_dining_spots_272
+      - light.utility_utility_spots_42
+      - light.utility_corridor_179
+      - light.utility_utility_mirror_83
+      - light.utility_utility_accents_446
+      - switch.utility_utility_fan_81
+      - light.garage_garage_light_195
+      - light.garden_room_garden_room_wall_69
+
+  outside:
+    name: Outside
+    entities:
+      - light.front_sign_light_347
+      - light.front_corner_189
+      - light.front_front_door_185
+      - light.front_parking_326
+      - light.garden_garden_room_outside_78
+      - light.garden_deck_lights_72
+      - light.garden_back_door_lights_98
+      - light.garden_bifold_lights_276
+      - switch.trees_trees
+      - light.balcony_balcony_lights_136

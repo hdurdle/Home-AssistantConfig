@@ -1,130 +1,18 @@
-# Configure a default setup of Home Assistant (frontend, api, etc)
 default_config:
 
 homeassistant:
   customize: !include customize.yaml
+  packages: !include_dir_named integrations
 
 logger:
-  default: critical
-  logs:
-    homeassistant.components.command_line.sensor: debug
+  default: info
 
 recorder:
   auto_purge: true
   purge_keep_days: 63
   db_url: !secret mariadb_connection_url
 
-  # Text to speech
-tts:
-  - platform: google_translate
-
-bmw_connected_drive:
-  name:
-    username: !secret bmw_username
-    password: !secret bmw_password
-    region: rest_of_world
-
-input_datetime:
-  i8_purchase:
-    name: i8 Purchase
-    has_date: true
-    has_time: false
-    initial: "2019-04-18"
-
-media_player:
-  - platform: androidtv
-    name: Bedroom Shield
-    host: 192.168.1.150
-  - platform: androidtv
-    name: Living Room Shield
-    host: 192.168.1.107
-    state_detection_rules:
-      "com.plexapp.android":
-        - "paused":
-            "media_session_state": 3 # this indentation is important!
-            "wake_lock_size": 1 # this indentation is important!
-        - "playing":
-            "media_session_state": 3 # this indentation is important!
-        - "standby"
-      "com.google.android.youtube.tv":
-        - "paused":
-            "media_session_state": 3 # this indentation is important!
-            "wake_lock_size": 1 # this indentation is important!
-        - "playing":
-            "media_session_state": 3 # this indentation is important!
-        - "standby"
-
-neato:
-  username: !secret neato_username
-  password: !secret neato_password
-
-# vacuum:
-#   - platform: eufyrobovac
-#     name: Kreacher
-#     ip_address: 10.107.0.188
-#     username: !secret eufy_username
-#     password: !secret eufy_password
-
-fibaro:
-  gateways:
-    - url: !secret fibaro_url
-      username: !secret fibaro_username
-      password: !secret fibaro_password
-
-lametric:
-  client_id: !secret lametric_client_id
-  client_secret: !secret lametric_client_secret
-
-notify:
-  name: lametric
-  platform: lametric
-
-climate:
-  - platform: sensibo
-    api_key: !secret sensibo_api
-
-device_tracker:
-  - platform: mqtt
-    devices:
-      mqtt_howard_iphone: !secret mqtt_howard_iphone_mac
-      mqtt_howard_watch: !secret mqtt_howard_watch_mac
-      mqtt_deb_iphone: !secret mqtt_deb_iphone_mac
-    payload_home: "online"
-    payload_not_home: "offline"
-    source_type: bluetooth
-
-remote:
-  - platform: harmony
-    name: Living Room
-    host: 192.168.1.112
-    activity: Watch Plex
-  - platform: harmony
-    name: Garden Room
-    host: 10.107.0.111
-    activity: Watch Plex
-
-surepetcare:
-  username: !secret sureflap_username
-  password: !secret sureflap_password
-  flaps: [113430, 166844, 151961]
-  pets: []
-  scan_interval: "00:30:00"
-
-cover:
-  platform: opengarage
-  covers:
-    garage:
-      host: 10.107.0.173
-      device_key: opendoor
-      name: garagedoor
-
-input_select: !include input_select.yaml
-binary_sensor: !include binary_sensors.yaml
-camera: !include cameras.yaml
 alexa: !include alexa.yaml
-switch: !include switch.yaml
-sensor: !include sensors.yaml
-group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml

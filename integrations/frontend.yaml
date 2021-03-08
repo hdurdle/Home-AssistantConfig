@@ -1,0 +1,2 @@
+frontend:
+  themes: !include ../themes/ios-themes/ios-themes.yaml

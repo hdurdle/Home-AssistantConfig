@@ -1,0 +1,6 @@
+surepetcare:
+  username: !secret sureflap_username
+  password: !secret sureflap_password
+  flaps: [113430, 166844, 151961, 483675]
+  pets: [68187, 68188, 152150, 152152]
+  scan_interval: "00:05:00"

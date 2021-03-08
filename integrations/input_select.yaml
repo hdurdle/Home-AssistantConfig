@@ -1,0 +1,23 @@
+input_select:
+  dishwasher_status:
+    name: Dishwasher Status
+    options:
+      - Dirty
+      - Running
+      - Drying
+      - Clean
+    initial: Dirty
+  washer_status:
+    name: Washer Status
+    options:
+      - Dirty
+      - Running
+      - Clean
+    initial: Dirty
+  tumble_status:
+    name: Tumble Status
+    options:
+      - Wet
+      - Running
+      - Dry
+    initial: Wet

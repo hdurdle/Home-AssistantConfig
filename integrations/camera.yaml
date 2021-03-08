@@ -1,0 +1,43 @@
+camera:
+  - name: Drive Last Person
+    platform: mqtt
+    topic: frigate/drive/person/snapshot
+  - name: Drive Last Dog
+    platform: mqtt
+    topic: frigate/drive/dog/snapshot
+  - name: Front Door Last Person
+    platform: mqtt
+    topic: frigate/frontdoor/person/snapshot
+  - name: Drive Last Car
+    platform: mqtt
+    topic: frigate/drive/car/snapshot
+  - name: Drive Last Cat
+    platform: mqtt
+    topic: frigate/drive/cat/snapshot
+  - name: Front Last Car
+    platform: mqtt
+    topic: frigate/frontdoor/car/snapshot
+  - name: Landing Last Cat
+    platform: mqtt
+    topic: frigate/landing/cat/snapshot
+  - name: Kitchen Last Person
+    platform: mqtt
+    topic: frigate/kitchen/person/snapshot
+  - name: Kitchen Last Cat
+    platform: mqtt
+    topic: frigate/kitchen/cat/snapshot
+  - name: Landing Last Person
+    platform: mqtt
+    topic: frigate/landing/person/snapshot
+  - name: Garage Last Person
+    platform: mqtt
+    topic: frigate/garage_drive/person/snapshot
+  - name: Living Room Last Person
+    platform: mqtt
+    topic: frigate/livingroom/person/snapshot
+  - name: Terrace Last Creature
+    platform: mqtt
+    topic: frigate/terrace/cat/snapshot
+  - name: Terrace Last Person
+    platform: mqtt
+    topic: frigate/terrace/person/snapshot

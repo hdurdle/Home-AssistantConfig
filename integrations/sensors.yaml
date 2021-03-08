@@ -1,0 +1,449 @@
+sensor:
+  - platform: template
+    sensors:
+      last_motion_sonos:
+        friendly_name: "Last Motion Sonos"
+        unique_id: "last_motion_sonos"
+        value_template: >
+          {% if states('sensor.last_motion') %}
+            {% if is_state('sensor.last_motion','binary_sensor.dressing_room_dressing_motion_296') %}
+            media_player.dressing_room
+            {% elif is_state('sensor.last_motion','binary_sensor.bedroom_bedroom_motion_450') %}
+            media_player.bedroom
+            {% elif is_state('sensor.last_motion','binary_sensor.bathroom_bathroom_motion_418') %}
+            media_player.bathroom
+            {% elif is_state('sensor.last_motion','binary_sensor.landing_landing_motion_281') %}
+            media_player.landing
+            {% elif is_state('sensor.last_motion','binary_sensor.office_office_motion_288') %}
+            media_player.office  
+            {% endif %}
+          {% endif %}
+
+  - platform: template
+    sensors:
+      guestlamp_on:
+        unique_id: "guestlamp_on"
+        value_template: > 
+          {{ states("sensor.guestlamp_energy_power") | float > 1 }}
+      bedleftlamp_on:
+        unique_id: "bedleftlamp_on"
+        value_template: > 
+          {{ states("sensor.bedleft_energy_power") | float > 1 }}
+      bedrightlamp_on:
+        unique_id: "bedrightlamp_on"
+        value_template: > 
+          {{ states("sensor.bed_right_energy_power") | float > 1 }}
+
+  - platform: template
+    sensors:
+      last_alexa:
+        unique_id: "last_alexa"
+        friendly_name: "Last Alexa"
+        value_template: >
+          {{ states.media_player | selectattr('attributes.last_called','eq',True) | map(attribute='entity_id') | first }}
+
+  - platform: template
+    sensors:
+      last_motion:
+        friendly_name: "Last Motion"
+        unique_id: "last_motion"
+        value_template: >
+          {% set sensors = [states.binary_sensor.office_desk_motion_118, states.binary_sensor.bedroom_bedroom_motion_450, states.binary_sensor.bathroom_bathroom_motion_418, states.binary_sensor.dressing_room_dressing_motion_296, states.binary_sensor.kitchen_kitchen_motion_106, states.binary_sensor.landing_landing_motion_281, states.binary_sensor.office_office_motion_288, states.binary_sensor.utility_utility_motion_440] %}
+          {% set time = sensors | map(attribute='last_changed') | max %}
+          {% set sensor = (sensors | selectattr('last_changed','eq', time) | list)[0] %}
+          {{sensor.entity_id}}
+
+  - platform: template
+    sensors:
+      last_door:
+        friendly_name: "Last Door"
+        unique_id: "last_door"
+        value_template: >
+          {% set sensors = [states.binary_sensor.hall_back_door_363, states.binary_sensor.hall_front_door_374, states.binary_sensor.garage_garage_back_door_370] %}
+          {% set time = sensors | map(attribute='last_changed') | max %}
+          {% set sensor = (sensors | selectattr('last_changed','eq', time) | list)[0] %}
+          {{sensor.entity_id}}
+
+  - platform: template
+    sensors:
+      octopus_cheap:
+        friendly_name: Octopus Cheap
+        value_template: "{{ states('sensor.octopus_offpeak_price') }}p from {{ as_timestamp(states('sensor.octopus_offpeak_from')) | timestamp_custom('%a %H:%M', True) }} to {{ as_timestamp(states('sensor.octopus_offpeak_to')) | timestamp_custom('%a %H:%M', True) }}"
+      octopus_peak:
+        friendly_name: Octopus Peak
+        value_template: "{{ states('sensor.octopus_peak_price') }}p from {{ as_timestamp(states('sensor.octopus_peak_from')) | timestamp_custom('%a %H:%M', True) }} to {{ as_timestamp(states('sensor.octopus_peak_to')) | timestamp_custom('%a %H:%M', True) }}"
+    
+  - platform: template
+    sensors:
+      powerwall_remaining:
+        value_template: "{{ (states('sensor.powerwall_charge') | float / 100 * 27) | round(2) }}"
+        unit_of_measurement: kWh
+      powerwall_time_remaining:
+        unit_of_measurement: hours
+        value_template: >
+          {%- if (states('sensor.powerwall_battery_now') | float > 0.1) -%}
+          {{ ((states('sensor.powerwall_remaining') | float) / ( states('sensor.powerwall_battery_now') | float)) | round(2) }}
+          {%- else -%}       
+          {{ ((states('sensor.powerwall_remaining') | float) / ( states('sensor.powerwall_load_now') | float)) | round(2) }}
+          {%- endif -%}
+
+  - platform: command_line
+    name: electricity_cost
+    scan_interval: 1800
+    command: curl "https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-H/standard-unit-rates/?period_from={{ now().year }}-{{ now().month }}-{{ now().day }}T{{ now().hour }}:{% if now().minute <30 %}00{% else %}30{% endif %}&period_to={{ now().year }}-{{ now().month }}-{% if (now().hour == 23) and (now().minute >=30) %}{{ now().day+1 }}{% else %}{{ now().day }}{% endif %}T{% if (now().hour == 23) and (now().minute >=30) %}00{% elif now().minute >=30 %}{{ now().hour+1}}{% else %}{{ now().hour}}{% endif %}:{% if now().minute >=30 %}00{% else %}30{% endif %}"
+    value_template: "{{ (value_json.results[0].value_inc_vat) | round(2) }}"
+    unit_of_measurement: "p/KWH"
+
+  - platform: template
+    sensors:
+      living_room:
+        value_template: '{{ state_attr("remote.living_room", "current_activity") }}'
+        friendly_name: "Living Room"
+      garden_room:
+        value_template: '{{ state_attr("remote.garden_room", "current_activity") }}'
+        friendly_name: "Garden Room"
+
+  - platform: template
+    sensors:
+      low_battery:
+        friendly_name: "Low Battery"
+        value_template: >
+          {%- set threshold = 30 -%}
+          {%- set domains = ['light', 'switch', 'sensor', 'zwave', 'lock'] -%}
+          {%- for domain in domains -%}
+          {%- for item in states[domain] if (not "Battery" == item.name) and (not "Low" in item.name) and (not "Critical" in item.name) and ((item.attributes.battery_level is defined and item.attributes['battery_level'] | int < threshold) or ("battery" in item.name | lower and ((item.state | int < threshold and item.state|int != 0) or item.state | lower == "low" or item.state | lower == "unknown"))) -%}
+              {{ item.attributes.friendly_name|lower|replace("pet_flap","")|replace("battery state","")|replace("battery level","")|trim|title }}{%- if not loop.last %}, {% endif -%}
+          {%- endfor -%}
+          {%- endfor -%}
+
+  - platform: template
+    sensors:
+      critical_battery:
+        friendly_name: "Critical Battery"
+        value_template: >
+          {%- set threshold = 15 -%}
+          {%- set domains = ['light', 'switch', 'sensor', 'zwave', 'lock'] -%}
+          {%- for domain in domains -%}
+          {%- for item in states[domain] if (not "Battery" == item.name) and (not "Low" in item.name) and (not "Critical" in item.name) and ((item.attributes.battery_level is defined and item.attributes['battery_level'] | int < threshold) or ("battery" in item.name | lower and ((item.state | int < threshold and item.state|int != 0) or item.state | lower == "low" or item.state | lower == "unknown"))) -%}
+              {{ item.attributes.friendly_name|lower|replace("pet_flap","")|replace("battery state","")|replace("battery level","")|trim|title }}{%- if not loop.last %}, {% endif -%}
+          {%- endfor -%}
+          {%- endfor -%}
+
+  - platform: template
+    sensors:
+      dishwasher_state:
+        value_template: "{{ states('input_select.dishwasher_status') }}"
+        friendly_name: "Dishwasher State"
+  - platform: template
+    sensors:
+      tumble_state:
+        value_template: "{{ states('input_select.tumble_status') }}"
+        friendly_name: "Tumble State"
+  - platform: template
+    sensors:
+      washer_state:
+        value_template: "{{ states('input_select.washer_status') }}"
+        friendly_name: "Washer State"
+
+  - platform: template
+    sensors:
+      garage_status:
+        friendly_name: "Garage Door Status"
+        value_template: "{% if states('cover.garagedoor') %}
+          {% if is_state_attr('cover.garagedoor', 'door_state', 'open') %}
+          Open
+          {% elif is_state_attr('cover.garagedoor', 'door_state', 'closed') %}
+          Closed
+          {% elif is_state_attr('cover.garagedoor', 'door_state', 'opening') %}
+          Opening
+          {% elif is_state_attr('cover.garagedoor', 'door_state', 'closing') %}
+          Closing
+          {% else %}
+          Unknown
+          {% endif %}
+          {% else %}
+          n/a
+          {% endif %}"
+        icon_template: "{%- if is_state_attr('cover.garagedoor', 'door_state', 'open') %}mdi:garage-open{% else %}mdi:garage{%- endif %}"
+      garage_car_present:
+        friendly_name: "i8 in Garage"
+        value_template: "{% if states('cover.garagedoor') %}
+          {% if is_state('cover.garagedoor', 'open') %}
+          n/a
+          {% elif (( state_attr('cover.garagedoor', 'distance_sensor') > 40) and (state_attr('cover.garagedoor', 'distance_sensor') < 150)) %}
+          Yes
+          {% else %}
+          No
+          {% endif %}
+          {% else %}
+          Unknown
+          {% endif %}"
+        icon_template: "{%- if is_state('cover.garagedoor', 'open') %}mdi:car{% else %}mdi:car-off{%- endif %}"
+
+  - platform: template
+    sensors:
+      i8_mileage_miles:
+        friendly_name: "i8 Mileage"
+        unit_of_measurement: "mi"
+        value_template: "{{ (states('sensor.i8_mileage')|float / 1.609) | round(0) }}"
+        icon_template: mdi:speedometer
+      i8_max_range_electric_miles:
+        friendly_name: "i8 Max Range Electric"
+        unit_of_measurement: "mi"
+        value_template: "{{ (states('sensor.i8_max_range_electric')|float / 1.609) | round(0) }}"
+        icon_template: mdi:speedometer
+      i8_remaining_range_electric_miles:
+        value_template: "{{ (states('sensor.i8_remaining_range_electric')|float / 1.609) | round(0) }}"
+        friendly_name: "i8 Remaining Range Electric"
+        unit_of_measurement: "mi"
+        icon_template: mdi:speedometer
+      i8_remaining_range_fuel_miles:
+        friendly_name: "i8 Remaining Range Fuel"
+        unit_of_measurement: "mi"
+        value_template: "{{ (states('sensor.i8_remaining_range_fuel')|float / 1.609) | round(0) }}"
+        icon_template: mdi:gas-station
+      i8_remaining_range_total_miles:
+        friendly_name: "i8 Remaining Range Total"
+        unit_of_measurement: "mi"
+        value_template: "{{ (states('sensor.i8_remaining_range_total')|float / 1.609) | round(0) }}"
+        icon_template: mdi:gas-station
+      i8_mileage_target:
+        friendly_name: "i8 Mileage Target"
+        unit_of_measurement: "mi"
+        icon_template: mdi:bullseye-arrow
+        value_template: "{{ ((as_timestamp(now())-(state_attr('input_datetime.i8_purchase', 'timestamp'))) | int /60/1440/365.25*10000) | round(0) }}"
+
+  - platform: template
+    sensors:
+      i8_mileage_delta:
+        friendly_name: "i8 Mileage Delta"
+        unit_of_measurement: "mi"
+        value_template: "{{ states('sensor.i8_mileage_miles')|int - states('sensor.i8_mileage_target')|int  }}"
+        icon_template: mdi:delta
+
+  - platform: rest
+    name: octopus_sensors
+    resource: http://192.168.1.205:3002/
+    json_attributes:
+      - cheap
+      - high
+      - low
+    value_template: "OK"
+  - platform: template
+    sensors:
+      octopus_peak_price:
+        value_template: '{{ states.sensor.octopus_sensors.attributes["high"]["price"] | round(2) }}'
+        unit_of_measurement: "p/KWH"
+      octopus_peak_from:
+        value_template: '{{  states.sensor.octopus_sensors.attributes["high"]["from"] | timestamp_local }}'
+      octopus_peak_to:
+        value_template: '{{ states.sensor.octopus_sensors.attributes["high"]["to"] | timestamp_local }}'
+      octopus_offpeak_price:
+        value_template: '{{ states.sensor.octopus_sensors.attributes["low"]["price"] | round(2) }}'
+        unit_of_measurement: "p/KWH"
+      octopus_offpeak_from:
+        value_template: '{{ states.sensor.octopus_sensors.attributes["low"]["from"] | timestamp_local }}'
+      octopus_offpeak_to:
+        value_template: '{{ states.sensor.octopus_sensors.attributes["low"]["to"] | timestamp_local }}'
+
+  - platform: template
+    sensors:
+      sun_azimuth:
+        friendly_name: "Sun Azimuth"
+        unit_of_measurement: "degrees"
+        value_template: "{{ state_attr('sun.sun', 'azimuth') }}"
+
+  - platform: template
+    sensors:
+      sun_elevation:
+        friendly_name: "Sun Elevation"
+        unit_of_measurement: "degrees"
+        value_template: "{{ state_attr('sun.sun', 'elevation') }}"
+
+  - platform: template
+    sensors:
+      daylight:
+        friendly_name: "Daylight"
+        value_template: "{{ state_attr('sun.sun', 'elevation') >= 1.5 }}"
+
+  - platform: template
+    sensors:
+      bedroomtv_source:
+        friendly_name: "Bedroom TV Source"
+        value_template: "{% if not is_state('media_player.bedroom_shield','off') %}{{state_attr('media_player.bedroom_shield', 'source') }}{%else%}{{states('media_player.bedroom_shield')}}{%endif%}"
+
+  - platform: template
+    sensors:
+      livingroomtv_source:
+        friendly_name: "Living Room TV Source"
+        value_template: "{% if not is_state('media_player.living_room_shield','off') %}{{state_attr('media_player.living_room_shield', 'source') }}{%else%}{{states('media_player.living_room_shield')}}{%endif%}"
+      livingroomtv_playing:
+        friendly_name: "Living Room TV Playing"
+        value_template: "{{ is_state('media_player.living_room_shield','playing') }}"
+
+  - platform: template
+    sensors:
+      livingroomtv_hue:
+        friendly_name: "Living Room TV Hue"
+        value_template: "{% if not is_state('media_player.living_room_shield','off') %}
+        {% if is_state_attr('media_player.living_room_shield', 'source', 'Plex') %}
+        hue-rotate(40.8deg)
+        {% elif is_state_attr('media_player.living_room_shield', 'source', 'Android TV Launcher') %}
+        hue-rotate(74.5deg)
+        {% elif is_state_attr('media_player.living_room_shield', 'source', 'YouTube') %}
+        hue-rotate(0deg)
+        {% elif is_state_attr('media_player.living_room_shield', 'source', 'Netflix') %}
+        hue-rotate(357deg)
+        {% else %}
+        hue-rotate(0deg)
+        {% endif %}
+        {% else %}
+        hue-rotate(0deg)
+        {%endif%}"
+
+  - platform: template
+    sensors:
+      bedroomtv_hue:
+        friendly_name: "Bedroom TV Hue"
+        value_template: "{% if not is_state('media_player.bedroom_shield','off') %}
+        {% if is_state_attr('media_player.bedroom_shield', 'source', 'Plex') %}
+        hue-rotate(40.8deg)
+        {% elif is_state_attr('media_player.bedroom_shield', 'source', 'Android TV Launcher') %}
+        hue-rotate(74.5deg)
+        {% elif is_state_attr('media_player.bedroom_shield', 'source', 'YouTube') %}
+        hue-rotate(0deg)
+        {% elif is_state_attr('media_player.bedroom_shield', 'source', 'Netflix') %}
+        hue-rotate(357deg)
+        {% else %}
+        hue-rotate(0deg)
+        {% endif %}
+        {% else %}
+        hue-rotate(0deg)
+        {%endif%}"
+
+  - platform: darksky
+    api_key: 1f251bc9cc54ca9bdb9c9259a65370df
+    forecast:
+      - 0
+    hourly_forecast:
+      - 0
+      - 1
+    monitored_conditions:
+      - summary
+      - icon
+      - temperature
+      - apparent_temperature
+      - cloud_cover
+      - uv_index
+      - humidity
+
+  - platform: template
+    sensors:
+      bathroom_humidity_high:
+        friendly_name: "Bathroom Humidity High"
+        value_template: "{{ states('sensor.bathroom_bathroom_humidity_421')|float > states('sensor.landing_landing_humidity_284')|float }}"
+
+  - platform: template
+    sensors:
+      utility_humidity_high:
+        friendly_name: "Utility Humidity High"
+        value_template: "{{ states('sensor.utility_utility_humidity_443')|float > states('sensor.kitchen_kitchen_humidity_109')|float }}"
+
+  - platform: template
+    sensors:
+      kickboard_colour:
+        friendly_name: "Kickboard Colour"
+        value_template: >
+          {%- if (states('sensor.electricity_cost')|float <= 2.5) -%}
+          blue
+          {%- elif (states('sensor.electricity_cost')|float <= 8.5) -%}
+          green
+          {%- elif (states('sensor.electricity_cost')|float <= 12.5) -%}
+          yellow
+          {%- elif (states('sensor.electricity_cost')|float <= 20) -%}
+          orange
+          {%- else -%}       
+          red
+          {%- endif -%}
+
+  - platform: mqtt
+    name: "Network UPS"
+    state_topic: "sensor/ups1"
+    value_template: "{{ value_json.STATUS }}"
+    icon: mdi:car-battery
+  - platform: mqtt
+    name: "Network UPS Serial"
+    state_topic: "sensor/ups1"
+    value_template: "{{ value_json.SERIALNO }}"
+    icon: mdi:note-text-outline
+  - platform: mqtt
+    name: "Network UPS Time"
+    state_topic: "sensor/ups1"
+    unit_of_measurement: minutes
+    value_template: "{{ value_json.TIMELEFT_MINUTES | int }}"
+    icon: mdi:timer
+  - platform: mqtt
+    name: "Network UPS Charge"
+    state_topic: "sensor/ups1"
+    unit_of_measurement: percent
+    value_template: "{{ value_json.BCHARGE_PERCENT | int }}"
+    icon: mdi:battery
+  - platform: mqtt
+    name: "Network UPS Load"
+    state_topic: "sensor/ups1"
+    unit_of_measurement: percent
+    value_template: "{{ value_json.LOADPCT_PERCENT | int }}"
+    icon: mdi:lightning-bolt-outline
+  - platform: mqtt
+    name: "Network UPS W"
+    state_topic: "sensor/ups1"
+    unit_of_measurement: W
+    value_template: "{{ (( (value_json.LOADPCT_PERCENT | float) / 100 ) * 700) | int }}"
+    icon: mdi:battery
+  - platform: mqtt
+    name: "Network UPS Voltage"
+    state_topic: "sensor/ups1"
+    unit_of_measurement: V
+    value_template: "{{ value_json.LINEV_VOLTS | int }}"
+    icon: mdi:power-socket-uk
+
+  - platform: mqtt
+    name: "Server UPS"
+    state_topic: "sensor/ups2"
+    value_template: "{{ value_json.STATUS }}"
+    icon: mdi:car-battery
+  - platform: mqtt
+    name: "Server UPS Serial"
+    state_topic: "sensor/ups2"
+    value_template: "{{ value_json.SERIALNO }}"
+    icon: mdi:note-text-outline
+  - platform: mqtt
+    name: "Server UPS Time"
+    state_topic: "sensor/ups2"
+    unit_of_measurement: minutes
+    value_template: "{{ value_json.TIMELEFT_MINUTES | int }}"
+    icon: mdi:timer
+  - platform: mqtt
+    name: "Server UPS Charge"
+    state_topic: "sensor/ups2"
+    unit_of_measurement: percent
+    value_template: "{{ value_json.BCHARGE_PERCENT | int }}"
+    icon: mdi:battery
+  - platform: mqtt
+    name: "Server UPS Load"
+    state_topic: "sensor/ups2"
+    unit_of_measurement: percent
+    value_template: "{{ value_json.LOADPCT_PERCENT | int }}"
+    icon: mdi:lightning-bolt-outline
+  - platform: mqtt
+    name: "Server UPS W"
+    state_topic: "sensor/ups2"
+    unit_of_measurement: W
+    value_template: "{{ (( (value_json.LOADPCT_PERCENT | float) / 100 ) * 700) | int }}"
+    icon: mdi:battery
+  - platform: mqtt
+    name: "Server UPS Voltage"
+    state_topic: "sensor/ups2"
+    unit_of_measurement: V
+    value_template: "{{ value_json.LINEV_VOLTS | int }}"
+    icon: mdi:power-socket-uk

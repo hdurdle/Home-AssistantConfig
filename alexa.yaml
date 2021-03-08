@@ -14,15 +14,22 @@ smart_home:
       - remote
       - scene
       - switch
+      - camera
+      - lock
     include_entities:
       - switch.office_star_wars_frame_399
       - switch.utility_utility_fan_81
       - switch.bathroom_bathroom_fan_11
       - switch.nowplaying_now_playing
-      - switch.garageaudio_garage_audio
       - switch.bedleft_bed_left
+      - switch.lego
       - group.garage
       - switch.trees_trees
+      - switch.guest_lamp
+      - switch.front_trees
+      - input_boolean.sleep_mode
+      - switch.hall_lamp
+      - switch.kitchen_lamp
     exclude_entities:
       - binary_sensor.bathroom_bathroom_motion_418
       - binary_sensor.sauron_motion_428
@@ -42,13 +49,28 @@ smart_home:
       - binary_sensor.pet_flap_utility_connectivity
       - binary_sensor.hub_twin_cottage
       - binary_sensor.updater
+      - binary_sensor.i8_condition_based_services
+      - binary_sensor.i8_check_control_messages
+      - binary_sensor.i8_charging_status
       - binary_sensor.i8_lights_parking
       - binary_sensor.i8_door_lock_state
+      - binary_sensor.i8_windows
+      - binary_sensor.i8_lids
+      - binary_sensor.pet_kat
+      - binary_sensor.pet_kyd
+      - binary_sensor.pet_bronte
+      - binary_sensor.pet_betty
+      - binary_sensor.landing_cat
+      - binary_sensor.drive_person
+      - binary_sensor.front_door_person
+      - binary_sensor.sun_elevation
+      - binary_sensor.sun_azimuth_bedroom
       - sensor.baldur_battery_state
       - sensor.bedroom_cluster_leader
       - sensor.bedroom_cluster_size
       - sensor.deborah_s_iphone_battery_state
       - sensor.deborah_s_iphone_room_presence
+      - sensor.office_desk_temp_119
       - sensor.energy
       - sensor.energy_battery_instant_power
       - sensor.energy_grid_instant_power
@@ -56,7 +78,15 @@ smart_home:
       - sensor.energy_solar_instant_power
       - sensor.flashforge_status
       - sensor.garden_room
+      - sensor.sauron_temp_429
       - sensor.hacs
+      - sensor.dark_sky_temperature_1h
+      - sensor.dark_sky_temperature_0h
+      - sensor.dark_sky_temperature
+      - sensor.dark_sky_apparent_temperature_1h
+      - sensor.dark_sky_apparent_temperature_0h
+      - sensor.dark_sky_apparent_temperature
+      - input_boolean.milk_brought_in
   entity_config:
     script.1591789399368:
       name: "Reboot Thermogroup"
@@ -68,12 +98,12 @@ smart_home:
       name: "Bedroom Curtain"
     cover.bedroom_roman:
       name: "Bedroom Blind"
+    cover.office_privacy:
+      name: "Office Blind"
     switch.office_star_wars_frame_399:
       display_categories: LIGHT
     switch.nowplaying_now_playing:
       name: "Now Playing"
-    switch.garageaudio_garage_audio:
-      name: "Garage Audio"
     cover.garagedoor:
       name: "Garage Door"
       display_categories: EXTERIOR_BLIND
@@ -82,4 +112,26 @@ smart_home:
       display_categories: LIGHT
     switch.bedleft_bed_left:
       name: "Bedside Lamp"
+      display_categories: LIGHT
+    light.living_room_globe_lamp_464:
+      name: "Globe Lamp"
+    switch.lego:
+      name: "Lego Man"
+      display_categories: LIGHT
+    light.wardrobes_level_on_off:
+      name: "Wardrobes"
+    switch.guest_lamp:
+      name: "Guest Lamp"
+      display_categories: LIGHT
+    switch.front_trees:
+      name: "Front Trees"
+      display_categories: LIGHT
+    input_boolean.sleep_mode:
+      name: "Sleep Mode"
+      display_categories: SWITCH
+    switch.hall_lamp:
+      name: "Hall Lamp"
+      display_categories: LIGHT
+    switch.kitchen_lamp:
+      name: "Kitchen Lamp"
       display_categories: LIGHT

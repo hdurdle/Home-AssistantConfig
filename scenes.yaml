@@ -1,43 +1,40 @@
 - id: '1588952519773'
-  name: Garden Lights
+  name: Garden Lights On
   entities:
     light.balcony_balcony_lights_136:
       brightness: 255
-      current_energy_kwh: 6.45
-      current_power_w: 34.4
       fibaro_id: 136
+      current_power_w: 34
+      current_energy_kwh: 45.25
       friendly_name: Balcony Lights
-      state: 'on'
       supported_features: 1
+      state: 'on'
     light.front_corner_189:
       brightness: 255
-      current_energy_kwh: 4.63
-      current_power_w: 26
       fibaro_id: 189
+      current_power_w: 51.1
+      current_energy_kwh: 37.67
       friendly_name: Corner Light
+      supported_features: 1
       state: 'on'
-      supported_features: 1
     light.front_front_door_185:
-      current_energy_kwh: 1.53
-      current_power_w: 0
+      brightness: 255
       fibaro_id: 185
+      current_power_w: 2.6
+      current_energy_kwh: 3.8
       friendly_name: Front Door Lights
-      state: 'off'
       supported_features: 1
+      state: 'on'
     light.front_garage_outside_172:
       brightness: 255
-      current_energy_kwh: 3.17
-      current_power_w: 0
       fibaro_id: 172
-      friendly_name: Garage Front
-      state: 'on'
-      supported_features: 1
-    light.front_parking_326:
-      brightness: 249.9
-      current_energy_kwh: 2.14
       current_power_w: 0
-      fibaro_id: 326
-      friendly_name: Parking Lights
+      current_energy_kwh: 9.88
+      friendly_name: Garage Front
+      supported_features: 1
+      state: 'on'
+    light.front_parking_326:
+      brightness: 239.7
       hs_color:
       - 0
       - 0
@@ -45,42 +42,193 @@
       - 255
       - 255
       - 255
-      state: 'on'
-      supported_features: 145
-      white_value: 255
       xy_color:
       - 0.323
       - 0.329
+      white_value: 255
+      fibaro_id: 326
+      current_power_w: 0
+      current_energy_kwh: 8.89
+      friendly_name: Parking Lights
+      supported_features: 145
+      state: 'on'
     light.garden_back_door_lights_98:
       brightness: 255
-      current_energy_kwh: 4.81
-      current_power_w: 19.8
       fibaro_id: 98
+      current_power_w: 11.1
+      current_energy_kwh: 21.34
       friendly_name: Back Door Lights
-      state: 'on'
       supported_features: 1
+      state: 'on'
     light.garden_bifold_lights_276:
       brightness: 255
-      current_energy_kwh: 3.97
-      current_power_w: 0
       fibaro_id: 276
-      friendly_name: Bifold Lights
-      state: 'on'
-      supported_features: 1
-    light.garden_deck_lights_72:
       current_power_w: 0
-      fibaro_id: 72
-      friendly_name: Deck
+      current_energy_kwh: 18.39
+      friendly_name: Bifold Lights
+      supported_features: 1
       state: 'on'
+    light.garden_deck_lights_72:
+      fibaro_id: 72
+      current_power_w: 0
+      friendly_name: Deck
       supported_features: 0
+      state: 'on'
     light.garden_garden_room_outside_78:
       brightness: 255
-      current_energy_kwh: 5.74
-      current_power_w: 37.6
       fibaro_id: 78
+      current_power_w: 38
+      current_energy_kwh: 42.58
       friendly_name: Garden Room Outside
-      state: 'on'
       supported_features: 1
+      state: 'on'
     switch.trees_trees:
       friendly_name: Trees
       state: 'on'
+    switch.front_trees:
+      friendly_name: Front Trees
+      state: 'on'
+  icon: mdi:tree
+- id: '1607371875375'
+  name: TV Time
+  entities:
+    light.living_room_side_lamp_345:
+      brightness: 25.5
+      fibaro_id: 345
+      friendly_name: Side Lamp
+      supported_features: 1
+      state: 'on'
+    light.living_room_living_room_wall_64:
+      brightness: 51
+      fibaro_id: 64
+      current_power_w: 2.8
+      current_energy_kwh: 7.18
+      friendly_name: Living Room Light
+      supported_features: 1
+      state: 'on'
+    light.living_room_globe_lamp_464:
+      brightness: 25.5
+      fibaro_id: 464
+      friendly_name: Globe Lamp
+      supported_features: 1
+      state: 'on'
+  icon: mdi:television
+- id: '1611135555550'
+  name: Outside for Jo
+  entities:
+    switch.trees_trees:
+      friendly_name: Trees
+      state: 'on'
+    light.front_parking_326:
+      brightness: 247.35
+      hs_color:
+      - 0
+      - 0
+      rgb_color:
+      - 255
+      - 255
+      - 255
+      xy_color:
+      - 0.323
+      - 0.329
+      white_value: 255
+      fibaro_id: 326
+      current_power_w: 0
+      current_energy_kwh: 8.89
+      friendly_name: Parking Lights
+      supported_features: 145
+      state: 'on'
+    light.garden_deck_lights_72:
+      fibaro_id: 72
+      current_power_w: 0
+      friendly_name: Deck
+      supported_features: 0
+      state: 'on'
+    light.garden_garden_room_outside_78:
+      brightness: 255
+      fibaro_id: 78
+      current_power_w: 38.4
+      current_energy_kwh: 42.58
+      friendly_name: Garden Room Outside
+      supported_features: 1
+      state: 'on'
+    light.garden_room_garden_room_wall_69:
+      brightness: 51
+      fibaro_id: 69
+      current_power_w: 3.8
+      current_energy_kwh: 2.45
+      friendly_name: Garden Room Light
+      supported_features: 1
+      state: 'on'
+    light.front_corner_189:
+      brightness: 255
+      fibaro_id: 189
+      current_power_w: 51
+      current_energy_kwh: 37.67
+      friendly_name: Corner Light
+      supported_features: 1
+      state: 'on'
+- id: '1611135919186'
+  name: Garden Lights Off
+  entities:
+    switch.front_trees:
+      friendly_name: Front Trees
+      state: 'off'
+    switch.trees_trees:
+      friendly_name: Trees
+      state: 'off'
+    light.front_corner_189:
+      fibaro_id: 189
+      current_power_w: 51.1
+      current_energy_kwh: 37.67
+      friendly_name: Corner Light
+      supported_features: 1
+      state: 'off'
+    light.balcony_balcony_lights_136:
+      fibaro_id: 136
+      current_power_w: 34
+      current_energy_kwh: 45.25
+      friendly_name: Balcony Lights
+      supported_features: 1
+      state: 'off'
+    light.front_front_door_185:
+      fibaro_id: 185
+      current_power_w: 2.6
+      current_energy_kwh: 3.8
+      friendly_name: Front Door Lights
+      supported_features: 1
+      state: 'off'
+    light.garden_garden_room_outside_78:
+      fibaro_id: 78
+      current_power_w: 38
+      current_energy_kwh: 42.58
+      friendly_name: Garden Room Outside
+      supported_features: 1
+      state: 'off'
+    light.garden_deck_lights_72:
+      fibaro_id: 72
+      current_power_w: 0
+      friendly_name: Deck
+      supported_features: 0
+      state: 'off'
+    light.front_parking_326:
+      fibaro_id: 326
+      current_power_w: 0
+      current_energy_kwh: 8.89
+      friendly_name: Parking Lights
+      supported_features: 145
+      state: 'off'
+    light.garden_bifold_lights_276:
+      fibaro_id: 276
+      current_power_w: 0
+      current_energy_kwh: 18.39
+      friendly_name: Bifold Lights
+      supported_features: 1
+      state: 'off'
+    light.garden_back_door_lights_98:
+      fibaro_id: 98
+      current_power_w: 11.1
+      current_energy_kwh: 21.34
+      friendly_name: Back Door Lights
+      supported_features: 1
+      state: 'off'

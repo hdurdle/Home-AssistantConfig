@@ -1,0 +1,6 @@
+input_datetime:
+  i8_purchase:
+    name: i8 Purchase
+    has_date: true
+    has_time: false
+    initial: "2019-04-18"
