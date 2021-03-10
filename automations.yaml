@@ -431,6 +431,11 @@
   - data: {}
     entity_id: switch.office_star_wars_frame_399
     service: switch.turn_off
+  - service: light.turn_off
+    target:
+      device_id: c0c6993d69e66c360b9dc1b7c0ca0115
+    data:
+      transition: 3
   mode: single
 - id: '1591918064904'
   alias: Rack Humidity High
