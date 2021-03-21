@@ -5,6 +5,12 @@ group:
       - binary_sensor.office_office_motion_288
       - binary_sensor.office_desk_motion_118
 
+  kitchen_motion:
+    name: Kitchen Motion Sensors
+    entities:
+      - binary_sensor.motion_kitchen
+      - binary_sensor.kitchen_kitchen_motion_106
+
   garage:
     name: Garage
     entities:

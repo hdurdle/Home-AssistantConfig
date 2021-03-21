@@ -16,6 +16,7 @@ smart_home:
       - switch
       - camera
       - lock
+      - binary_sensor
     include_entities:
       - switch.office_star_wars_frame_399
       - switch.utility_utility_fan_81
@@ -23,48 +24,12 @@ smart_home:
       - switch.nowplaying_now_playing
       - switch.bedleft_bed_left
       - switch.lego
-      - group.garage
       - switch.trees_trees
       - switch.guest_lamp
-      - switch.front_trees
       - input_boolean.sleep_mode
       - switch.hall_lamp
       - switch.kitchen_lamp
     exclude_entities:
-      - binary_sensor.bathroom_bathroom_motion_418
-      - binary_sensor.sauron_motion_428
-      - binary_sensor.dressing_room_dressing_motion_296
-      - binary_sensor.hall_hall_sensor_112
-      - binary_sensor.kitchen_kitchen_motion_106
-      - binary_sensor.landing_landing_motion_281
-      - binary_sensor.office_desk_motion_118
-      - binary_sensor.office_monitor_motion_434
-      - binary_sensor.office_office_motion_288
-      - binary_sensor.pantry_pantry_motion_166
-      - binary_sensor.rack_rack_motion_154
-      - binary_sensor.i8_condition_based_services
-      - binary_sensor.i8_charging_status
-      - binary_sensor.pet_flap_garage_door_connectivity
-      - binary_sensor.pet_flap_garden_room_connectivity
-      - binary_sensor.pet_flap_utility_connectivity
-      - binary_sensor.hub_twin_cottage
-      - binary_sensor.updater
-      - binary_sensor.i8_condition_based_services
-      - binary_sensor.i8_check_control_messages
-      - binary_sensor.i8_charging_status
-      - binary_sensor.i8_lights_parking
-      - binary_sensor.i8_door_lock_state
-      - binary_sensor.i8_windows
-      - binary_sensor.i8_lids
-      - binary_sensor.pet_kat
-      - binary_sensor.pet_kyd
-      - binary_sensor.pet_bronte
-      - binary_sensor.pet_betty
-      - binary_sensor.landing_cat
-      - binary_sensor.drive_person
-      - binary_sensor.front_door_person
-      - binary_sensor.sun_elevation
-      - binary_sensor.sun_azimuth_bedroom
       - sensor.baldur_battery_state
       - sensor.bedroom_cluster_leader
       - sensor.bedroom_cluster_size
@@ -87,11 +52,10 @@ smart_home:
       - sensor.dark_sky_apparent_temperature_0h
       - sensor.dark_sky_apparent_temperature
       - input_boolean.milk_brought_in
+      - input_number.catflapbatterythreshold
   entity_config:
     script.1591789399368:
       name: "Reboot Thermogroup"
-    binary_sensor.i8_lids:
-      name: "i8 Boot"
     lock.i8_lock:
       name: "i8"
     cover.bedroom_curtain:

@@ -11,6 +11,49 @@ recorder:
   auto_purge: true
   purge_keep_days: 63
   db_url: !secret mariadb_connection_url
+  exclude:
+    domains:
+      - automation
+      - updater
+      - timer
+      - http
+      - camera
+    entity_globs:
+      - sensor.weather_*
+      - sensor.dark_sky_*
+      - sensor.*lux*
+      - sensor.*humidity*
+      - sensor.hp_officejet_*
+      - sensor.*_uv_*
+      - sensor.motion_recording_*
+      - sensor.octopus_*
+      - switch.ir_active_*
+      - switch.record_always_*
+      - switch.record_motion_*
+      - switch.status_light_on_*
+      - cover.*_roman
+      - cover.*_privacy
+    entities:
+      - sun.sun # Don't record sun data
+      - sensor.last_boot # Comes from 'systemmonitor' sensor platform
+      - sensor.date
+      - sensor.hacs
+      - sensor.mjolnir_last_update_trigger
+      - sensor.mjolnir_average_active_pace
+      - sensor.mjolnir_geocoded_location
+      - sensor.mjolnir_bssid
+      - sensor.mjolnir_sim_1
+      - sensor.mjolnir_sim_2
+      - sensor.mjolnir_floors_descended
+      - sensor.mjolnir_floors_ascended
+      - sensor.low_battery
+      - sensor.critical_battery
+      - sensor.network_ups_serial
+      - sensor.server_ups_serial
+      - binary_sensor.updater
+      - binary_sensor.i8_lights_parking
+    event_types:
+      - call_service # Don't record service calls
 
 alexa: !include alexa.yaml
 automation: !include automations.yaml

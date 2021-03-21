@@ -28,13 +28,9 @@
   alias: Kitchen Lights if Dark
   description: ''
   trigger:
-  - entity_id: binary_sensor.kitchen_kitchen_motion_106
+  - entity_id: group.kitchen_motion
     from: 'off'
     platform: state
-    to: 'on'
-  - platform: state
-    entity_id: binary_sensor.motion_kitchen
-    from: 'off'
     to: 'on'
   condition:
   - below: '50'
@@ -151,7 +147,7 @@
   alias: Kitchen Empty
   description: ''
   trigger:
-  - entity_id: binary_sensor.kitchen_kitchen_motion_106
+  - entity_id: group.kitchen_motion
     for: 00:15:00
     platform: state
     to: 'off'

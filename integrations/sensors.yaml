@@ -48,7 +48,7 @@ sensor:
         friendly_name: "Last Motion"
         unique_id: "last_motion"
         value_template: >
-          {% set sensors = [states.binary_sensor.office_desk_motion_118, states.binary_sensor.bedroom_bedroom_motion_450, states.binary_sensor.bathroom_bathroom_motion_418, states.binary_sensor.dressing_room_dressing_motion_296, states.binary_sensor.kitchen_kitchen_motion_106, states.binary_sensor.landing_landing_motion_281, states.binary_sensor.office_office_motion_288, states.binary_sensor.utility_utility_motion_440] %}
+          {% set sensors = [states.binary_sensor.motion_kitchen, states.binary_sensor.motion_dining, states.binary_sensor.motion_garage, states.binary_sensor.office_desk_motion_118, states.binary_sensor.bedroom_bedroom_motion_450, states.binary_sensor.bathroom_bathroom_motion_418, states.binary_sensor.dressing_room_dressing_motion_296, states.binary_sensor.kitchen_kitchen_motion_106, states.binary_sensor.landing_landing_motion_281, states.binary_sensor.office_office_motion_288, states.binary_sensor.garage_garage_motion_489, states.binary_sensor.utility_utility_motion_440] %}
           {% set time = sensors | map(attribute='last_changed') | max %}
           {% set sensor = (sensors | selectattr('last_changed','eq', time) | list)[0] %}
           {{sensor.entity_id}}
@@ -102,6 +102,10 @@ sensor:
       garden_room:
         value_template: '{{ state_attr("remote.garden_room", "current_activity") }}'
         friendly_name: "Garden Room"
+      eufy_battery:
+        value_template: '{{ state_attr("vacuum.eufy", "battery_level") }}'
+        unit_of_measurement: '%'
+        friendly_name: "Eufy Battery"
 
   - platform: template
     sensors:
