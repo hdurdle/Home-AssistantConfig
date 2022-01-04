@@ -1,0 +1,27 @@
+automation:
+  - id: dishwasher_set_dirty_on_power_drop
+    alias: 'Dishwasher: Set dirty on power drop'
+    trigger:
+      - below: '1'
+        entity_id: sensor.dishwasher_energy_apparentpower
+        platform: numeric_state
+    condition:
+      - condition: and
+        conditions:
+          - below: '1'
+            condition: numeric_state
+            entity_id: sensor.dishwasher_energy_apparentpower
+          - condition: or
+            conditions:
+              - condition: state
+                entity_id: input_select.dishwasher_status
+                state: Clean
+              - condition: state
+                entity_id: input_select.dishwasher_status
+                state: Drying
+    action:
+      - data:
+          entity_id: input_select.dishwasher_status
+          option: Dirty
+        service: input_select.select_option
+    mode: single

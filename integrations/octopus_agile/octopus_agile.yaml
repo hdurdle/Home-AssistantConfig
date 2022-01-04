@@ -1,0 +1,47 @@
+octopusagile:
+  region_code: "H"
+
+  mpan: !secret octopus_mpan
+  serial: !secret octopus_serial
+  auth: !secret octopus_token
+  startdate: "2021-07-01"
+  consumption: false
+
+  moneymakers:
+    - switch.immersion1: null
+    - switch.immersion2: null
+
+  timers:
+    - day_from: today
+      day_to: tomorrow
+      entity_id: switch.immersion1
+      numHrs: 4
+      params: null
+      block: false
+      requirements:
+        - day_from: today
+          day_to: tomorrow
+          numHrs: 2
+          time_from: "19:00:00"
+          time_to: "06:00:00"
+        - day_from: tomorrow
+          day_to: tomorrow
+          numHrs: 1
+          time_from: "10:00:00"
+          time_to: "16:00:00"
+      time_from: "19:00:00"
+      time_to: "19:00:00"
+  # - day_from: today
+  #   day_to: tomorrow
+  #   entity_id: switch.tesla_force_charge
+  #   numHrs: 3
+  #   params: null
+  #   block: false
+  #   time_from: '19:00:00'
+  #   time_to: '16:00:00'
+
+  # run_devices:
+  # - energy_time: 3
+  #   entity_id: switch.tesla_force_charge
+  #   run_before: '16:00:00'
+  #   run_time: 3

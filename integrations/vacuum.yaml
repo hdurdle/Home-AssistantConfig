@@ -1,6 +1,0 @@
-vacuum:
-  - platform: eufyrobovac
-    name: Eufy
-    ip_address: 10.107.0.137
-    username: !secret eufy_username
-    password: !secret eufy_password

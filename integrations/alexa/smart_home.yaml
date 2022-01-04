@@ -1,0 +1,153 @@
+alexa:
+  smart_home:
+    locale: en-GB
+    endpoint: https://api.eu.amazonalexa.com/v3/events
+    client_id: !secret alexa_client_id
+    client_secret: !secret alexa_client_secret
+    filter:
+      exclude_entity_globs:
+        - sensor.dark_sky_*
+        - sensor.deborah_s_iphone_*
+        - sensor.thanos_*
+        - sensor.*_air_temperature
+        - sensor.*_lux
+      exclude_domains:
+        - media_player
+        - automation
+        - device_tracker
+        - group
+        - person
+        - remote
+        - scene
+        - switch
+        - camera
+        - lock
+        - binary_sensor
+        - input_boolean
+        - input_number
+        - image_processing
+      include_entities:
+        - switch.frame
+        - switch.utility_fan
+        - switch.bathroom_fan
+        - switch.bathroom_mirror
+        - switch.utility_mirror
+        - switch.bathroom_accents
+        - switch.utility_accents
+        - switch.nowplaying_now_playing
+        - switch.bedleft_bed_left
+        - switch.bed_right
+        - switch.lego
+        - switch.trees_trees
+        - switch.guest_lamp
+        - input_boolean.sleep_mode
+        - switch.hall_lamp
+        - switch.kitchen_lamp
+        - input_boolean.sonos_power
+        - group.deck_lights
+        - switch.christmas_tree
+        - switch.garage_light
+      exclude_entities:
+        - sensor.solaredge_heatsink_temp
+        - sensor.baldur_battery_state
+        - sensor.flashforge_status
+        - sensor.garden_room
+        - sensor.hacs
+        - sensor.immersion2_ds18b20_temperature
+    entity_config:
+      # cars
+      lock.i8_lock:
+        name: "i8"
+      # bathroom
+      switch.bathroom_accents:
+        name: "Bathroom Accents"
+        display_categories: LIGHT
+      switch.bathroom_mirror:
+        name: "Bathroom Mirror"
+        display_categories: LIGHT
+      # utility
+      switch.utility_accents:
+        name: "Utility Accents"
+        display_categories: LIGHT
+      switch.utility_mirror:
+        name: "Utility Mirror"
+        display_categories: LIGHT
+      # bedroom
+      cover.bedroom_curtain:
+        name: "Bedroom Curtain"
+      cover.bedroom_roman:
+        name: "Bedroom Blind"
+      switch.bedleft_bed_left:
+        name: "Fox Lamp"
+        display_categories: LIGHT
+      switch.bed_right:
+        name: "Bee Lamp"
+        display_categories: LIGHT
+      # office
+      cover.office_privacy:
+        name: "Office Blind"
+      switch.frame:
+        display_categories: LIGHT
+      # dressing room
+      light.wardrobes_level_on_off:
+        name: "Wardrobes"
+      switch.guest_lamp:
+        name: "Guest Lamp"
+        display_categories: LIGHT
+      # living room
+      switch.nowplaying_now_playing:
+        name: "Now Playing"
+      switch.lego:
+        name: "Lego Man"
+        display_categories: LIGHT
+      # hall
+      switch.hall_lamp:
+        name: "Hall Lamp"
+        display_categories: LIGHT
+      # kitchen
+      switch.kitchen_lamp:
+        name: "Kitchen Lamp"
+        display_categories: LIGHT
+      # garage
+      cover.garagedoor:
+        name: "Garage Door"
+        display_categories: EXTERIOR_BLIND
+      switch.garage_light:
+        name: "Garage Light"
+        display_categories: LIGHT
+      # outside
+      switch.trees_trees:
+        name: "Trees"
+        display_categories: LIGHT
+      climate.hot_tub_climate:
+        name: "Hot Tub"
+        display_categories: THERMOSTAT
+      group.deck_lights:
+        name: "Deck Lights"
+        display_categories: LIGHT
+      # system
+      input_boolean.sleep_mode:
+        name: "Sleep Mode"
+        display_categories: SWITCH
+      sensor.immersion1_ds18b20_temperature:
+        name: "Hot Water"
+        display_categories: TEMPERATURE_SENSOR
+      # aircon
+      climate.bedroom:
+        name: "Bedroom Aircon"
+        display_categories: AIR_CONDITIONER
+      climate.garden_room:
+        name: "Garden Room Aircon"
+        display_categories: AIR_CONDITIONER
+      climate.office:
+        name: "Office Aircon"
+        display_categories: AIR_CONDITIONER
+      climate.kitchen:
+        name: "Kitchen Aircon"
+        display_categories: AIR_CONDITIONER
+      climate.garage:
+        name: "Garage Aircon"
+        display_categories: AIR_CONDITIONER
+      climate.rack:
+        name: "Rack Aircon"
+        display_categories: AIR_CONDITIONER

@@ -1,0 +1,7 @@
+notify:
+  - name: slack
+    platform: slack
+    api_key: !secret slack_apikey
+    default_channel: "#home"
+    username: jarvis
+    icon: https://avatars.slack-edge.com/2021-07-28/2316226478997_5fc753ddf72b5a77033c_48.png

@@ -1,0 +1,36 @@
+automation:
+  id: unifi_protect_doorbell_press
+  alias: UniFi Protect Doorbell Press
+  description: ''
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.doorbell_doorbell
+      to: 'on'
+  condition:
+    - condition: state
+      entity_id: input_boolean.sleep_mode
+      state: 'off'
+  action:
+    - service: notify.alexa_media
+      data:
+        data:
+          method: speak
+          type: announce
+        message: There's somebody at the door!
+        target:
+          - media_player.office_dot
+          - media_player.landing_dot
+          - media_player.hall_dot
+          - media_player.bedroom_dot
+          - media_player.kitchen_dot
+          - media_player.garage_dot
+          - media_player.garden_room_dot
+          - media_player.living_room_dot
+    - service: notify.lametric
+      data:
+        message: Door!
+        data:
+          sound: knock-knock
+          icon: a24800
+          icon_type: none
+  mode: single

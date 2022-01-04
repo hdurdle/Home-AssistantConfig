@@ -40,11 +40,21 @@ reset_dot_volume_night_mode:
     entity_id: media_player.landing, media_player.hall, media_player.kitchen
   mode: single
 sonos_power_off:
-  alias: Sonos Power Off
+  alias: 'Sonos: Power Off'
   sequence:
   - service: switch.turn_off
     data: {}
-    entity_id: switch.sonos_dressing_room, switch.sonos_bathroom
+    target:
+      entity_id:
+      - switch.sonos_bathroom
+      - switch.sonos_bedroom
+      - switch.sonos_dressing_room
+      - switch.sonos_hall
+      - switch.sonos_kitchen
+      - switch.sonos_landing
+      - switch.sonos_living_room
+      - switch.sonos_office
+      - switch.sonos_utility
   mode: single
 doorbell_and_announce:
   alias: Doorbell and Announce
@@ -62,4 +72,102 @@ doorbell_and_announce:
       message: There's somebody at the door!
       target:
       - media_player.office_dot
+  mode: single
+sonos_power_on:
+  alias: 'Sonos: Power On'
+  sequence:
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id:
+      - switch.sonos_bathroom
+      - switch.sonos_bedroom
+      - switch.sonos_dressing_room
+      - switch.sonos_hall
+      - switch.sonos_kitchen
+      - switch.sonos_landing
+      - switch.sonos_living_room
+      - switch.sonos_office
+      - switch.sonos_utility
+  mode: single
+find_debs_phone:
+  alias: Find Deb's Phone
+  sequence:
+  - service: device_tracker.icloud3_find_iphone_alert
+    data:
+      device_name: Deborah's iPhone
+  mode: single
+find_mjolnir:
+  alias: Find Mjolnir
+  sequence:
+  - service: device_tracker.icloud3_find_iphone_alert
+    data:
+      device_name: Mjolnir
+  mode: single
+ipad_lock:
+  alias: iPad Lock
+  sequence:
+  - service: esphome.ipadcontroller_send
+    data:
+      message: KEY_LEFT_GUI\+KEY_LEFT_CTRL\+q
+      delay_ms: 100
+  mode: single
+ipad_unlock:
+  alias: iPad Unlock
+  sequence:
+  - service: esphome.ipadcontroller_send
+    data:
+      message: ' '
+      delay_ms: 150
+  - service: esphome.ipadcontroller_send
+    data:
+      message: ' '
+      delay_ms: 150
+  mode: single
+ipad_start_ha:
+  alias: iPad Start HA
+  sequence:
+  - service: esphome.ipadcontroller_send
+    data:
+      message: 'KEY_LEFT_GUI\+ '
+      delay_ms: 150
+  - service: esphome.ipadcontroller_send
+    data:
+      message: Home Ass
+      delay_ms: 150
+  - service: esphome.ipadcontroller_send
+    data:
+      message: KEY_RETURN
+      delay_ms: 150
+  mode: single
+blink_hall:
+  alias: Blink Hall
+  sequence:
+  - service: switch.turn_on
+    target:
+      entity_id: switch.hall_lamp
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - service: switch.turn_off
+    target:
+      entity_id: switch.hall_lamp
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - service: switch.turn_on
+    target:
+      entity_id: switch.hall_lamp
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - service: switch.turn_off
+    target:
+      entity_id: switch.hall_lamp
   mode: single

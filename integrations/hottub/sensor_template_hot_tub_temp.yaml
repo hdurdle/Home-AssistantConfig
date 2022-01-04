@@ -1,0 +1,11 @@
+sensor:
+  - platform: template
+    sensors:
+      hot_tub_set_temperature:
+        availability_template: >-
+          {%- if not is_state("climate.hot_tub_climate", "unavailable") and state_attr('climate.hot_tub_climate', 'temperature') != None %}
+            true
+          {%- endif %}
+        unique_id: hot_tub_set_temperature
+        friendly_name_template: 'Hot Tub Set Temperature'
+        value_template: "{{ state_attr('climate.hot_tub_climate','temperature') | float(0) }}"

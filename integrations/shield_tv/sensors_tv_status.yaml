@@ -1,0 +1,65 @@
+sensor:
+  
+  - platform: template
+    sensors:
+      living_room:
+        value_template: '{{ state_attr("remote.living_room", "current_activity") }}'
+        friendly_name: "Living Room"
+      garden_room:
+        value_template: '{{ state_attr("remote.garden_room", "current_activity") }}'
+        friendly_name: "Garden Room"
+
+  - platform: template
+    sensors:
+      bedroomtv_source:
+        friendly_name: "Bedroom TV Source"
+        value_template: "{% if not is_state('media_player.bedroom_shield','off') %}{{state_attr('media_player.bedroom_shield', 'source') }}{%else%}{{states('media_player.bedroom_shield')}}{%endif%}"
+
+  - platform: template
+    sensors:
+      livingroomtv_source:
+        friendly_name: "Living Room TV Source"
+        value_template: "{% if not is_state('media_player.living_room_shield','off') %}{{state_attr('media_player.living_room_shield', 'source') }}{%else%}{{states('media_player.living_room_shield')}}{%endif%}"
+      livingroomtv_playing:
+        friendly_name: "Living Room TV Playing"
+        value_template: "{{ is_state('media_player.living_room_shield','playing') or is_state_attr('media_player.living_room_shield','source','com.nvidia.bbciplayer') }}"
+
+  - platform: template
+    sensors:
+      livingroomtv_hue:
+        friendly_name: "Living Room TV Hue"
+        value_template: "{% if not is_state('media_player.living_room_shield','off') %}
+        {% if is_state_attr('media_player.living_room_shield', 'source', 'Plex') %}
+        hue-rotate(40.8deg)
+        {% elif is_state_attr('media_player.living_room_shield', 'source', 'Android TV Launcher') %}
+        hue-rotate(74.5deg)
+        {% elif is_state_attr('media_player.living_room_shield', 'source', 'YouTube') %}
+        hue-rotate(0deg)
+        {% elif is_state_attr('media_player.living_room_shield', 'source', 'Netflix') %}
+        hue-rotate(357deg)
+        {% else %}
+        hue-rotate(0deg)
+        {% endif %}
+        {% else %}
+        hue-rotate(0deg)
+        {%endif%}"
+
+  - platform: template
+    sensors:
+      bedroomtv_hue:
+        friendly_name: "Bedroom TV Hue"
+        value_template: "{% if not is_state('media_player.bedroom_shield','off') %}
+        {% if is_state_attr('media_player.bedroom_shield', 'source', 'Plex') %}
+        hue-rotate(40.8deg)
+        {% elif is_state_attr('media_player.bedroom_shield', 'source', 'Android TV Launcher') %}
+        hue-rotate(74.5deg)
+        {% elif is_state_attr('media_player.bedroom_shield', 'source', 'YouTube') %}
+        hue-rotate(0deg)
+        {% elif is_state_attr('media_player.bedroom_shield', 'source', 'Netflix') %}
+        hue-rotate(357deg)
+        {% else %}
+        hue-rotate(0deg)
+        {% endif %}
+        {% else %}
+        hue-rotate(0deg)
+        {%endif%}"

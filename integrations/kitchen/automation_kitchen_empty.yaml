@@ -1,0 +1,27 @@
+automation:
+  - id: automation_kitchen_empty
+    alias: Kitchen Empty
+    trigger:
+      - entity_id: group.kitchen_motion
+        for:
+          hours: 0
+          minutes: 5
+          seconds: 0
+          milliseconds: 0
+        platform: state
+        to: "off"
+        from: "on"
+    condition: []
+    action:
+      - service: light.turn_off
+        data:
+          transition: 3
+        target:
+          entity_id:
+            - light.front_spots
+            - light.back_spots
+            - light.kitchen_shelves
+            - light.kitchen_handles
+            - light.kitchen_pendants
+      - service: script.ipad_lock
+    mode: single

@@ -2,14 +2,29 @@ group:
   office_motion:
     name: Office Motion Sensors
     entities:
-      - binary_sensor.office_office_motion_288
-      - binary_sensor.office_desk_motion_118
+      - binary_sensor.office_sensor_motion
+      - binary_sensor.office_desk_motion
+
+  deck_lights:
+    name: Deck Lights
+    entities:
+      - switch.deck_lights_bottom
+      - switch.deck_lights_top
 
   kitchen_motion:
     name: Kitchen Motion Sensors
     entities:
-      - binary_sensor.motion_kitchen
-      - binary_sensor.kitchen_kitchen_motion_106
+      - binary_sensor.kitchen_ipad_sensor_motion
+      - binary_sensor.kitchen_back_sensor_motion
+      - binary_sensor.kitchen_sink_sensor_motion
+      - binary_sensor.kitchen_util_sensor_motion
+      - binary_sensor.pantry_sensor_motion
+
+  utility_motion:
+    name: Utility Motion Sensors
+    entities:
+      - binary_sensor.utility_sensor_motion
+      - binary_sensor.kitchen_util_sensor_motion
 
   garage:
     name: Garage
@@ -18,53 +33,88 @@ group:
       - sensor.garage_status
       - sensor.garage_car_present
 
+  living_room_blinds:
+    name: Living Room Blinds
+    entities:
+      - cover.living_l_privacy
+      - cover.living_r_privacy
+      - cover.living_l_roman
+      - cover.living_r_roman
+
+  hall:
+    name: Hall
+    entities:
+      - switch.hall_lamp
+      - light.hall_spots
+
+  kitchen:
+    name: Kitchen
+    entities:
+      - light.front_spots
+      - light.back_spots
+      - light.pantry_light
+
+  utility:
+    name: Utility
+    entities:
+      - light.corridor_spots
+      - switch.utility_accents
+      - switch.utility_mirror
+      - light.utility_spots
+
   upstairs:
     name: Upstairs
     entities:
-      - light.bedroom_bedroom_light_59
-      - light.bedroom_headboard_311
-      - light.bathroom_bathroom_spots_8
-      - light.bathroom_bathroom_mirror_37
-      - light.bathroom_accent_lights_412
-      - light.dressing_room_wardrobes_22
-      - light.landing_landing_spots_151
-      - light.landing_pendant_224
-      - light.office_office_spots_49
-      - switch.office_star_wars_frame_399
-      - switch.bathroom_bathroom_fan_11
+      - light.bedroom_light
+      - light.headboard
+      - light.bathroom_spots
+      - switch.bathroom_mirror
+      - switch.bathroom_accents
+      - light.wardrobes_level_on_off
+      - light.landing_spots
+      - light.landing_pendant
+      - light.office_spots
+      - switch.frame
+      - switch.bathroom_fan
       - switch.bedleft_bed_left
       - switch.guest_lamp
 
   downstairs:
     name: Downstairs
     entities:
-      - light.hall_hall_spots_146
-      - light.living_room_living_room_wall_64
+      - light.hall_spots
+      - light.living_room_lights
       - light.nanoleaf
-      - switch.xmas
-      - light.living_room_side_lamp_345
-      - light.living_room_globe_lamp_464
-      - light.kitchen_kitchen_spots_139
-      - light.pantry_pantry_light_163
-      - light.dining_room_dining_spots_272
-      - light.utility_utility_spots_42
-      - light.utility_corridor_179
-      - light.utility_utility_mirror_83
-      - light.utility_utility_accents_446
-      - switch.utility_utility_fan_81
-      - light.garage_garage_light_195
-      - light.garden_room_garden_room_wall_69
+      - light.sideboard_lamp
+      - light.front_spots
+      - light.kitchen_pendants
+      - light.pantry_light
+      - light.back_spots
+      - light.utility_spots
+      - light.corridor_spots
+      - switch.utility_mirror
+      - switch.utility_accents
+      - switch.utility_fan
+      - switch.garage_light
+      - light.garden_room_lights
+      - switch.lego
+
+  livingroom:
+    name: Living Room
+    entities:
+      - light.living_room_lights
+      - light.nanoleaf
+      - light.sideboard_lamp
+      - switch.lego
 
   outside:
     name: Outside
     entities:
-      - light.front_sign_light_347
-      - light.front_corner_189
-      - light.front_front_door_185
-      - light.front_parking_326
-      - light.garden_garden_room_outside_78
-      - light.garden_deck_lights_72
-      - light.garden_back_door_lights_98
-      - light.garden_bifold_lights_276
+      - switch.sign_light
+      - light.front_door_lights
+      - light.garden_room_exterior
+      - group.deck_lights
+      - light.back_door_lights
+      - light.bifold_lights
       - switch.trees_trees
-      - light.balcony_balcony_lights_136
+      - light.balcony

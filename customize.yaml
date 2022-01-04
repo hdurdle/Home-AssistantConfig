@@ -1,9 +1,5 @@
 cover.bedroom_curtain:
   device_class: curtain
-sensor.bedroom_bedroom_uv_454:
-  friendly_name: Bedroom UV
-sensor.utility_utility_uv_444:
-  friendly_name: Utility UV
 switch.flashforge_flashforge:
   friendly_name: Flashforge
 sensor.dishwasher_state:
@@ -12,9 +8,10 @@ sensor.washer_state:
   icon: mdi:washing-machine
 sensor.tumble_state:
   icon: mdi:tumble-dryer
-
+sensor.quooker_state:
+  icon: mdi:water-pump
 cover.garagedoor:
-  device_class: shutter
+  device_class: garage
   friendly_name: Garage Door
 sensor.i8_charging_status:
   friendly_name: Charging Status
@@ -22,8 +19,6 @@ binary_sensor.i8_lids:
   friendly_name: i8 Boot
 binary_sensor.i8_windows:
   friendly_name: i8 Windows
-binary_sensor.i8_lights_parking:
-  friendly_name: i8 Parking Lights
 sensor.i8_charging_level_hv:
   friendly_name: i8 Battery
 sensor.i8_remaining_fuel:
@@ -32,3 +27,5 @@ sensor.i8_connectionstatus:
   friendly_name: BMW Connected Status
 binary_sensor.i8_door_lock_state:
   friendly_name: i8 Lock
+sensor.branwell_location:
+  icon: mdi:dog

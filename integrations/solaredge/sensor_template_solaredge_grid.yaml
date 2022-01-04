@@ -1,0 +1,10 @@
+sensor:
+  - platform: template
+    sensors:
+      solaredge_grid:
+        unique_id: solaredge_grid
+        friendly_name: Grid
+        unit_of_measurement: "kW"
+        icon_template: "mdi:transmission-tower"
+        value_template: "{{( ((states('sensor.solaredge_modbus_meter_1') | float(0)) / 1000.0 ) | round(1))  }}"
+

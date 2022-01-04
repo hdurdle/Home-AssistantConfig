@@ -1,0 +1,5 @@
+binary_sensor:
+
+  - name: Workday
+    platform: workday
+    country: GB

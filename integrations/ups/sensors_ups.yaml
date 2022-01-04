@@ -1,0 +1,82 @@
+sensor:
+  - platform: mqtt
+    name: "Network UPS"
+    state_topic: "sensor/ups1"
+    value_template: "{{ value_json.STATUS }}"
+    icon: mdi:car-battery
+  - platform: mqtt
+    name: "Network UPS Serial"
+    state_topic: "sensor/ups1"
+    value_template: "{{ value_json.SERIALNO }}"
+    icon: mdi:note-text-outline
+  - platform: mqtt
+    name: "Network UPS Time"
+    state_topic: "sensor/ups1"
+    unit_of_measurement: minutes
+    value_template: "{{ value_json.TIMELEFT_MINUTES | float | round(2) }}"
+    icon: mdi:timer
+  - platform: mqtt
+    name: "Network UPS Charge"
+    state_topic: "sensor/ups1"
+    unit_of_measurement: percent
+    value_template: "{{ value_json.BCHARGE_PERCENT | int }}"
+    icon: mdi:battery
+  - platform: mqtt
+    name: "Network UPS Load"
+    state_topic: "sensor/ups1"
+    unit_of_measurement: percent
+    value_template: "{{ value_json.LOADPCT_PERCENT | int }}"
+    icon: mdi:lightning-bolt-outline
+  - platform: mqtt
+    name: "Network UPS W"
+    state_topic: "sensor/ups1"
+    unit_of_measurement: W
+    value_template: "{{ (( (value_json.LOADPCT_PERCENT | float) / 100 ) * 700) | int }}"
+    icon: mdi:battery
+  - platform: mqtt
+    name: "Network UPS Voltage"
+    state_topic: "sensor/ups1"
+    unit_of_measurement: V
+    value_template: "{{ value_json.LINEV_VOLTS | int }}"
+    icon: mdi:power-socket-uk
+
+  - platform: mqtt
+    name: "Server UPS"
+    state_topic: "sensor/ups2"
+    value_template: "{{ value_json.STATUS }}"
+    icon: mdi:car-battery
+  - platform: mqtt
+    name: "Server UPS Serial"
+    state_topic: "sensor/ups2"
+    value_template: "{{ value_json.SERIALNO }}"
+    icon: mdi:note-text-outline
+  - platform: mqtt
+    name: "Server UPS Time"
+    state_topic: "sensor/ups2"
+    unit_of_measurement: minutes
+    value_template: "{{ value_json.TIMELEFT_MINUTES | float | round(2) }}"
+    icon: mdi:timer
+  - platform: mqtt
+    name: "Server UPS Charge"
+    state_topic: "sensor/ups2"
+    unit_of_measurement: percent
+    value_template: "{{ value_json.BCHARGE_PERCENT | int }}"
+    icon: mdi:battery
+  - platform: mqtt
+    name: "Server UPS Load"
+    state_topic: "sensor/ups2"
+    unit_of_measurement: percent
+    value_template: "{{ value_json.LOADPCT_PERCENT | int }}"
+    icon: mdi:lightning-bolt-outline
+  - platform: mqtt
+    name: "Server UPS W"
+    state_topic: "sensor/ups2"
+    unit_of_measurement: W
+    value_template: "{{ (( (value_json.LOADPCT_PERCENT | float) / 100 ) * 980) | int }}"
+    icon: mdi:battery
+  - platform: mqtt
+    name: "Server UPS Voltage"
+    state_topic: "sensor/ups2"
+    unit_of_measurement: V
+    value_template: "{{ value_json.LINEV_VOLTS | int }}"
+    icon: mdi:power-socket-uk

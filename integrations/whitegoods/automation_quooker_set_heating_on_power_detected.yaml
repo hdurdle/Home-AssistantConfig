@@ -1,0 +1,25 @@
+automation:
+  - id: quooker_set_heating_on_power_detected
+    alias: 'Quooker: Set to heating when power detected'
+    mode: single
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.quooker_energy_apparentpower
+        above: '500'
+        for: '00:00:05'
+      - platform: homeassistant
+        id: "start"
+        event: start
+      - platform: event
+        id: "reload"
+        event_type: automation_reloaded        
+    condition:
+      - condition: numeric_state
+        entity_id: sensor.quooker_energy_apparentpower
+        above: '500'
+    action:
+      - service: input_select.set_options
+        target:
+          entity_id: input_select.quooker_status
+        data:
+          options: Heating

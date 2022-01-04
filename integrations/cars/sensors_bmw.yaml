@@ -1,0 +1,51 @@
+sensor:
+  - platform: template
+    sensors:
+      i8_mileage_miles:
+        friendly_name: "i8 Mileage"
+        unit_of_measurement: "mi"
+        value_template: "{{ (states('sensor.i8_mileage')|float(-1) / 1.609) | round(0) }}"
+        icon_template: mdi:speedometer
+      i8_mileage_our_miles:
+        friendly_name: "i8 Mileage (Ours)"
+        unit_of_measurement: "mi"
+        value_template: "{{ (states('sensor.i8_mileage')|float(-1) / 1.609) | round(0) - 41 }}"
+        icon_template: mdi:speedometer
+      i8_max_range_electric_miles:
+        friendly_name: "i8 Max Range Electric"
+        unit_of_measurement: "mi"
+        value_template: "{{ (states('sensor.i8_max_range_electric')|float(-1) / 1.609) | round(0) }}"
+        icon_template: mdi:speedometer
+      i8_remaining_range_electric_miles:
+        value_template: "{{ (states('sensor.i8_remaining_range_electric')|float(-1) / 1.609) | round(0) }}"
+        friendly_name: "i8 Remaining Range Electric"
+        unit_of_measurement: "mi"
+        icon_template: mdi:speedometer
+      i8_remaining_range_fuel_miles:
+        friendly_name: "i8 Remaining Range Fuel"
+        unit_of_measurement: "mi"
+        value_template: "{{ (states('sensor.i8_remaining_range_fuel')|float(-1) / 1.609) | round(0) }}"
+        icon_template: mdi:gas-station
+      i8_fuel_percentage:
+        friendly_name: "i8 Fuel Remaining"
+        unit_of_measurement: "%"
+        value_template: "{{ (states('sensor.i8_remaining_fuel') | float(-1) / 42 * 100) | round(1) }}"
+        icon_template: mdi:gas-station
+      i8_remaining_range_total_miles:
+        friendly_name: "i8 Remaining Range Total"
+        unit_of_measurement: "mi"
+        value_template: "{{ (states('sensor.i8_remaining_range_total')|float(-1) / 1.609) | round(0) }}"
+        icon_template: mdi:gas-station
+      i8_mileage_target:
+        friendly_name: "i8 Mileage Target"
+        unit_of_measurement: "mi"
+        icon_template: mdi:bullseye-arrow
+        value_template: "{{ ((as_timestamp(now())-(state_attr('input_datetime.i8_purchase', 'timestamp'))) | int(-1) /60/1440/365.25*10000) | round(0) }}"
+
+  - platform: template
+    sensors:
+      i8_mileage_delta:
+        friendly_name: "i8 Mileage Delta"
+        unit_of_measurement: "mi"
+        value_template: "{{ (states('sensor.i8_mileage_miles')|int(-1) - 41) - states('sensor.i8_mileage_target')|int(-1)  }}"
+        icon_template: mdi:delta

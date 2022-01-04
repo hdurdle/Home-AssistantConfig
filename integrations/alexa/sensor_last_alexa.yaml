@@ -1,0 +1,39 @@
+sensor:
+  - platform: template
+    sensors:
+      last_alexa:
+        unique_id: "last_alexa"
+        friendly_name: "Last Alexa"
+        availability_template: >-
+          {{ states.media_player is defined }}
+        value_template: >
+          {{ states.media_player | selectattr('entity_id','search','_dot$',true) | selectattr('attributes.last_called','eq',True) | map(attribute='name') | first }}
+        attribute_templates:
+          last_called: >
+            {% set last_alexa = (states.media_player | selectattr('entity_id','search','_dot$',true) | selectattr('attributes.last_called','eq',True) | first) %}
+            {{ relative_time(as_datetime((last_alexa.attributes.last_called_timestamp/1000))) }} ago
+
+  - platform: template
+    sensors:
+      last_alexa_command:
+        unique_id: "last_alexa_command"
+        friendly_name: "Last Alexa Command"
+        availability_template: >-
+          {{ states.media_player is defined }}
+        value_template: >
+          {{ states.media_player | selectattr('entity_id','search','_dot$',true) | selectattr('attributes.last_called','eq',True) | map(attribute='attributes.last_called_summary') | first }}
+        attribute_templates:
+          last_called: >
+            {% set last_alexa = (states.media_player | selectattr('entity_id','search','_dot$',true) | selectattr('attributes.last_called','eq',True) | first) %}
+            {{ relative_time(as_datetime((last_alexa.attributes.last_called_timestamp/1000))) }} ago
+
+  - platform: template
+    sensors:
+      last_alexa_time:
+        unique_id: "last_alexa_time"
+        friendly_name: "Last Alexa Time"
+        availability_template: >-
+          {{ states.media_player is defined }}
+        value_template: >
+          {% set last_alexa = (states.media_player | selectattr('entity_id','search','_dot$',true) | selectattr('attributes.last_called','eq',True) | first) %}
+          {{ relative_time(as_datetime((last_alexa.attributes.last_called_timestamp/1000))) }} ago

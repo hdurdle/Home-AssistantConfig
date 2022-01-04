@@ -1,0 +1,6 @@
+sensor:
+  - platform: template
+    sensors:
+      powerwall_time_remaining_format:
+        value_template: >
+          {{ (states.sensor.powerwall_time_remaining.state|float *60 *60 )|int | timestamp_custom("%H:%M", 0) }}

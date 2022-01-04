@@ -1,0 +1,3 @@
+tesla_gateway:
+  username: !secret tesla_username
+  password: !secret tesla_password

@@ -1,0 +1,18 @@
+sensor:
+  - platform: template
+    sensors:
+      mache_mileage_miles:
+        friendly_name: "Mach-E Mileage"
+        unit_of_measurement: "mi"
+        value_template: "{{ (states('sensor.fordpass_odometer')|float / 1.609) | round(0) }}"
+        icon_template: mdi:speedometer
+      mache_range:
+        value_template: "{{ (state_attr('sensor.fordpass_elveh', 'elVehDTE') | float / 1.609) | round(0) }}"
+        friendly_name: "Mach-E Range"
+        unit_of_measurement: "mi"
+        icon_template: mdi:speedometer
+      mache_battery_charge:
+        value_template: "{{ state_attr('sensor.fordpass_elveh', 'Battery Fill Level') | int }}"
+        unit_of_measurement: "%"
+      mache_battery_charge_status:
+        value_template: "{{ state_attr('sensor.fordpass_elveh', 'Battery Charge Status') }}"

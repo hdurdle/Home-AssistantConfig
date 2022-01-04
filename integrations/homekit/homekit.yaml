@@ -1,0 +1,5 @@
+homekit:
+  filter:
+    include_entities:
+      - cover.garagedoor
+      - binary_sensor.kitchen_ipad_sensor_motion

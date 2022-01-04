@@ -1,0 +1,12 @@
+binary_sensor:
+
+  - name: "sun azimuth bedroom"
+    platform: threshold
+    upper: 260
+    lower: 175
+    entity_id: sensor.sun_azimuth
+
+  - name: "sun elevation"
+    platform: threshold
+    upper: 30
+    entity_id: sensor.sun_elevation

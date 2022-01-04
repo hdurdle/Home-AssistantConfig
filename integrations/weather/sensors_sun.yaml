@@ -1,0 +1,20 @@
+sensor:
+  - platform: template
+    sensors:
+      sun_azimuth:
+        friendly_name: "Sun Azimuth"
+        unit_of_measurement: "degrees"
+        value_template: "{{ state_attr('sun.sun', 'azimuth') }}"
+
+  - platform: template
+    sensors:
+      sun_elevation:
+        friendly_name: "Sun Elevation"
+        unit_of_measurement: "degrees"
+        value_template: "{{ state_attr('sun.sun', 'elevation') }}"
+
+  - platform: template
+    sensors:
+      daylight:
+        friendly_name: "Daylight"
+        value_template: "{{ state_attr('sun.sun', 'elevation') >= 1.5 }}"

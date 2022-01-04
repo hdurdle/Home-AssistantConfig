@@ -1,0 +1,68 @@
+image_processing:
+  - platform: platerecognizer
+    api_token: !secret plate_recognizer_token
+    mmc: True
+    regions:
+      - gb
+      - ie
+    watched_plates:
+      - lb20wzh
+      - rx71lur
+    save_file_folder: /config/platerecogniser/
+    save_timestamped_file: True
+    always_save_latest_file: True
+    source:
+      - entity_id: camera.drive
+  - platform: platerecognizer
+    api_token: !secret plate_recognizer_token
+    mmc: True
+    regions:
+      - gb
+      - ie
+    watched_plates:
+      - lb20wzh
+      - rx71lur
+    save_file_folder: /config/platerecogniser/
+    save_timestamped_file: True
+    always_save_latest_file: True
+    source:
+      - entity_id: camera.front_door
+  - platform: platerecognizer
+    api_token: !secret plate_recognizer_token
+    mmc: True
+    regions:
+      - gb
+      - ie
+    watched_plates:
+      - lb20wzh
+      - rx71lur
+    save_file_folder: /config/platerecogniser/
+    save_timestamped_file: True
+    always_save_latest_file: True
+    source:
+      - entity_id: camera.drive_top
+  - platform: platerecognizer
+    api_token: !secret plate_recognizer_token
+    regions:
+      - gb
+      - ie
+    mmc: True
+    save_file_folder: /config/platerecogniser/
+    save_timestamped_file: True
+    always_save_latest_file: True
+    source:
+      - entity_id: camera.test_plate
+
+sensor:
+  - platform: template
+    sensors:
+      plate_recognizer_i8:
+        friendly_name: "lb20wzh"
+        value_template: "{{ state_attr('image_processing.platerecognizer_drive', 'watched_plates').lb20wzh }}"
+      plate_recognizer_mache:
+        friendly_name: "rx71lur"
+        value_template: "{{ state_attr('image_processing.platerecognizer_drive', 'watched_plates').rx71lur }}"
+        
+      plate_recognizer_api_call_remaining:
+        friendly_name: "Plate Recognizer API calls remaining"
+        value_template: "{{ state_attr('image_processing.platerecognizer_drive', 'statistics').calls_remaining }}"

@@ -1,0 +1,12 @@
+sensor:
+  - platform: template
+    sensors:
+      bathroom_humidity_high:
+        friendly_name: "Bathroom Humidity High"
+        value_template: "{{ states('sensor.bathroom_sensor_humidity') | float(0) > 45 }}"
+
+  - platform: template
+    sensors:
+      utility_humidity_high:
+        friendly_name: "Utility Humidity High"
+        value_template: "{{ states('sensor.utility_sensor_humidity') | float(0) > 45 }}"

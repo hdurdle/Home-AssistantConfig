@@ -1,0 +1,20 @@
+sensor:
+  - platform: template
+    sensors:
+      last_motion_sonos:
+        friendly_name: "Last Motion Sonos"
+        unique_id: "last_motion_sonos"
+        value_template: >
+          {% if states('sensor.last_motion') %}
+            {% if is_state('sensor.last_motion','binary_sensor.dressing_room_sensor_motion') %}
+            media_player.dressing_room
+            {% elif is_state('sensor.last_motion','binary_sensor.bedroom_sensor_motion') %}
+            media_player.bedroom
+            {% elif is_state('sensor.last_motion','binary_sensor.bathroom_sensor_motion') %}
+            media_player.bathroom
+            {% elif is_state('sensor.last_motion','binary_sensor.landing_sensor_motion') %}
+            media_player.landing
+            {% elif is_state('sensor.last_motion','binary_sensor.office_sensor_motion') %}
+            media_player.office  
+            {% endif %}
+          {% endif %}

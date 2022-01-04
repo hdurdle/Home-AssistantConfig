@@ -1,0 +1,54 @@
+automation:
+  - id: unifi_protect_vehicle_detected_drive_voice_alert
+    alias: Send message when Vehicle detected Drive voice alert
+    mode: single
+    trigger:
+      - platform: homeassistant
+        id: 'start'
+        event: start
+      - platform: event
+        id: 'reload'
+        event_type: automation_reloaded        
+      - platform: state
+        id: 'vehicle'
+        entity_id:  binary_sensor.motion_drive
+        to: vehicle
+        attribute: event_object        
+              
+    action:
+      - choose:
+          - conditions: 
+              - condition: trigger
+                id: 'vehicle'
+            sequence:       
+              - service: input_text.set_value
+                target:
+                  entity_id: input_text.camera_drive_object_detected
+                data:
+                  value: "{{ trigger.to_state.attributes.event_object }}"    
+                    
+              - service: notify.alexa_media
+                data:
+                  data:
+                    method: speak
+                    type: announce
+                  message: Vehicle detected on drive.
+                  target:
+                    - media_player.office_dot
+                    - media_player.landing_dot
+                    - media_player.hall_dot
+                    - media_player.bedroom_dot
+                    - media_player.kitchen_dot
+                    - media_player.garage_dot
+                    - media_player.garden_room_dot              
+              - service: notify.garden_room_tv
+                data:
+                  message: Vehicle detected on drive.
+              - service: notify.bedroom_tv
+                data:
+                  message: Vehicle detected on drive.              
+      - service: input_text.set_value
+        target:
+          entity_id: input_text.camera_drive_object_detected
+        data:
+          value: ""          

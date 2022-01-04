@@ -1,0 +1,4 @@
+# sensor:
+#   - platform: starlingbank
+#     accounts:
+#       - access_token: !secret starling_access_token

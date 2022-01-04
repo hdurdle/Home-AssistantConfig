@@ -1,0 +1,29 @@
+sensor:
+
+  - platform: template
+    sensors:
+      dishwasher_state:
+        availability_template: >-
+          {%- if not is_state("switch.dishwasher_dishwasher", "unavailable")  %}
+            true
+          {%- endif %}
+        value_template: "{{ states('input_select.dishwasher_status') }}"
+        friendly_name: "Dishwasher State"
+
+  - platform: template
+    sensors:
+      tumble_state:
+        value_template: "{{ states('input_select.tumble_status') }}"
+        friendly_name: "Tumble State"
+
+  - platform: template
+    sensors:
+      washer_state:
+        value_template: "{{ states('input_select.washer_status') }}"
+        friendly_name: "Washer State"
+
+  - platform: template
+    sensors:
+      quooker_state:
+        value_template: "{{ states('input_select.quooker_status') }}"
+        friendly_name: "Quooker State"

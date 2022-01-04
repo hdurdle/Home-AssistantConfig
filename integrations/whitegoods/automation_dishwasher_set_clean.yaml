@@ -1,0 +1,20 @@
+automation:
+  - id: automation_dishwasher_set_clean
+    alias: 'Dishwasher: Set clean'
+    trigger:
+      - entity_id: input_select.dishwasher_status
+        for: '0:15:00'
+        platform: state
+        to: Drying
+    condition:
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: input_select.dishwasher_status
+            state: Drying
+    action:
+      - data:
+          entity_id: input_select.dishwasher_status
+          option: Clean
+        service: input_select.select_option
+    mode: single

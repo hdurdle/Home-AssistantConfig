@@ -11,48 +11,24 @@
   action:
   - data:
       transition: 3
-    entity_id: light.office_office_spots_49
     service: light.turn_off
+    target:
+      entity_id: light.office_spots
   - data: {}
-    entity_id: switch.office_star_wars_frame_399
     service: switch.turn_off
-  - data: {}
-    entity_id: media_player.office
-    service: media_player.media_pause
+    target:
+      entity_id:
+      - switch.frame
   - service: light.turn_off
     data:
       transition: 3
-    entity_id: light.wled_desk
-  mode: single
-- id: '1588887123994'
-  alias: Kitchen Lights if Dark
-  description: ''
-  trigger:
-  - entity_id: group.kitchen_motion
-    from: 'off'
-    platform: state
-    to: 'on'
-  condition:
-  - below: '50'
-    condition: numeric_state
-    entity_id: sensor.kitchen_kitchen_lux_108
-  - condition: state
-    entity_id: light.kitchen_kitchen_spots_139
-    state: 'off'
-  - condition: state
-    entity_id: input_boolean.sleep_mode
-    state: 'off'
-  action:
-  - service: switch.turn_on
-    data: {}
-    entity_id: switch.kitchen_lamp
+    entity_id: light.desk_leds
   mode: single
 - id: '1588887264693'
   alias: Dressing Room motion on
   description: ''
   trigger:
-  - entity_id: binary_sensor.dressing_room_dressing_motion_296
-    from: 'off'
+  - entity_id: binary_sensor.dressing_room_sensor_motion
     platform: state
     to: 'on'
   condition:
@@ -68,33 +44,34 @@
       transition: 3
     entity_id: light.wardrobes_level_on_off
     service: light.turn_on
+  - service: switch.turn_on
+    target:
+      entity_id: switch.dressing_room_wall
   mode: single
 - id: '1588887759670'
-  alias: Pendant On
+  alias: Landing Pendant On
   description: ''
   trigger:
-  - entity_id: binary_sensor.landing_landing_motion_281
-    from: 'off'
-    platform: state
+  - platform: state
     to: 'on'
+    entity_id: binary_sensor.landing_sensor_motion
   condition:
-  - below: '50'
-    condition: numeric_state
-    entity_id: sensor.landing_landing_lux_283
   - condition: state
     entity_id: input_boolean.sleep_mode
     state: 'off'
   action:
   - data:
-      brightness: 12
-    entity_id: light.landing_pendant_224
+      brightness_pct: 100
     service: light.turn_on
+    target:
+      entity_id:
+      - light.landing_pendant
   mode: single
 - id: '1588894576731'
-  alias: Pendant off
+  alias: Landing Pendant off
   description: ''
   trigger:
-  - entity_id: binary_sensor.landing_landing_motion_281
+  - entity_id: binary_sensor.landing_sensor_motion
     for: 00:05:00
     from: 'on'
     platform: state
@@ -102,16 +79,17 @@
   condition: []
   action:
   - data: {}
-    entity_id: light.landing_pendant_224
     service: light.turn_off
+    target:
+      entity_id:
+      - light.landing_pendant
   mode: single
 - id: '1588937256436'
   alias: Dressing room no motion
   description: ''
   trigger:
-  - entity_id: binary_sensor.dressing_room_dressing_motion_296
+  - entity_id: binary_sensor.dressing_room_sensor_motion
     for: 00:10:00
-    from: 'on'
     platform: state
     to: 'off'
   condition:
@@ -125,6 +103,9 @@
   - service: sonos.unjoin
     data:
       entity_id: media_player.dressing_room
+  - service: switch.turn_off
+    target:
+      entity_id: switch.dressing_room_wall
   mode: single
 - id: '1588950734950'
   alias: Garden Lights - On at Sunset
@@ -143,47 +124,11 @@
     entity_id: scene.outside
     service: scene.turn_on
   mode: single
-- id: '1588956962492'
-  alias: Kitchen Empty
-  description: ''
-  trigger:
-  - entity_id: group.kitchen_motion
-    for: 00:15:00
-    platform: state
-    to: 'off'
-    from: 'on'
-  condition: []
-  action:
-  - data: {}
-    entity_id: light.kitchen_kitchen_spots_139
-    service: light.turn_off
-  - service: switch.turn_off
-    data: {}
-    entity_id: switch.kitchen_lamp
-  mode: single
-- id: '1578085069925'
-  alias: Update Octopus Agile Price
-  description: ''
-  trigger:
-  - hours: '*'
-    minutes: '30'
-    platform: time_pattern
-    seconds: '0'
-  - hours: '*'
-    minutes: '0'
-    platform: time_pattern
-    seconds: '0'
-  condition: []
-  action:
-  - data:
-      entity_id: sensor.electricity_cost
-    service: homeassistant.update_entity
-  mode: single
 - id: '1590149622384'
-  alias: Bathroom Accents On
+  alias: Bathroom Accents On (Day)
   description: ''
   trigger:
-  - entity_id: binary_sensor.bathroom_bathroom_motion_418
+  - entity_id: binary_sensor.bathroom_sensor_motion
     from: 'off'
     platform: state
     to: 'on'
@@ -192,33 +137,45 @@
     entity_id: input_boolean.sleep_mode
     state: 'off'
   action:
-  - data: {}
-    entity_id: light.bathroom_accent_lights_412
-    service: light.turn_on
+  - service: scene.turn_on
+    target:
+      entity_id: scene.bathroom_accents_day
+    data: {}
   mode: single
 - id: '1590149733152'
   alias: Bathroom All Off
   description: ''
   trigger:
-  - entity_id: binary_sensor.bathroom_bathroom_motion_418
-    for: 00:10:00
+  - entity_id: binary_sensor.bathroom_sensor_motion
+    for:
+      hours: 0
+      minutes: 15
+      seconds: 0
+      milliseconds: 0
     from: 'on'
     platform: state
     to: 'off'
   condition: []
   action:
   - data:
-      entity_id: light.bathroom_bathroom_spots_8
-    entity_id: light.bathroom_bathroom_spots_8
+      transition: 3
     service: light.turn_off
-  - data:
-      entity_id: light.bathroom_bathroom_mirror_37
-    entity_id: light.bathroom_accent_lights_412
+    target:
+      entity_id:
+      - light.bathroom_spots
+  - data: {}
+    service: switch.turn_off
+    target:
+      entity_id:
+      - switch.bathroom_mirror
+  - data: {}
     service: light.turn_off
-  - data:
-      entity_id: light.bathroom_accent_lights_412
-    entity_id: light.bathroom_bathroom_mirror_37
-    service: light.turn_off
+    target:
+      entity_id:
+      - light.shelly_bathroom_mirror_rgb
+  - service: switch.turn_off
+    target:
+      entity_id: switch.bathroom_accents
   mode: single
 - id: '1590149820014'
   alias: Bathroom Humidity Fan Off
@@ -230,7 +187,7 @@
   condition: []
   action:
   - data: {}
-    entity_id: switch.bathroom_bathroom_fan_11
+    entity_id: switch.bathroom_fan
     service: switch.turn_off
   mode: single
 - id: '1590446382322'
@@ -297,78 +254,6 @@
     entity_id: light.kickboard
     service: light.turn_on
   mode: single
-- id: '1590658718292'
-  alias: Rack Temp  High
-  description: ''
-  trigger:
-  - above: '22'
-    entity_id: sensor.rack_rack_temperature_155
-    for: 00:03:00
-    platform: numeric_state
-  condition: []
-  action:
-  - data: {}
-    entity_id: climate.rack
-    service: climate.turn_on
-  mode: single
-- id: '1590707448475'
-  alias: Rack Temp and Humidity Low
-  description: ''
-  trigger:
-  - below: '22'
-    entity_id: sensor.rack_rack_temperature_155
-    for: 00:02:00
-    platform: numeric_state
-  condition:
-  - below: '55'
-    condition: numeric_state
-    entity_id: sensor.rack_rack_humidity_157
-  action:
-  - data: {}
-    entity_id: climate.rack
-    service: climate.turn_off
-  mode: single
-- id: '1591609534326'
-  alias: Kickboard Power Colour - 4 (Red)
-  description: ''
-  trigger:
-  - above: '12'
-    below: '20'
-    entity_id: sensor.electricity_cost
-    platform: numeric_state
-    value_template: '{{states.sensor.electricity_cost.state}}'
-  condition: []
-  action:
-  - data:
-      brightness_pct: 25
-      color_name: red
-      effect: Solid
-      transition: 5
-    entity_id: light.kickboard
-    service: light.turn_on
-  mode: single
-- id: '1591609594206'
-  alias: Kickboard Power Colour - (normal)
-  description: ''
-  trigger:
-  - above: '2'
-    below: '9'
-    entity_id: sensor.electricity_cost
-    platform: numeric_state
-    value_template: '{{states.sensor.electricity_cost.state}}'
-  condition: []
-  action:
-  - data:
-      brightness_pct: 25
-      effect: solid
-      rgb_color:
-      - 255
-      - 159
-      - 0
-      transition: 5
-    entity_id: light.kickboard
-    service: light.turn_on
-  mode: single
 - id: '1591774767394'
   alias: Volume Resets
   description: ''
@@ -400,60 +285,48 @@
   alias: Office secondaries on
   description: ''
   trigger:
-  - entity_id: light.office_office_spots_49
+  - entity_id: light.office_spots
     platform: state
     to: 'on'
     from: 'off'
   condition: []
   action:
   - data: {}
-    entity_id: switch.office_star_wars_frame_399
     service: switch.turn_on
+    target:
+      entity_id:
+      - switch.frame
   - service: light.turn_on
     data:
       transition: 3
-    entity_id: light.wled_desk
+    entity_id: light.desk_leds
   mode: single
 - id: '1591865790715'
   alias: Office secondaries off
   description: ''
   trigger:
-  - entity_id: light.office_office_spots_49
+  - entity_id: light.office_spots
     platform: state
     to: 'off'
     from: 'on'
   condition: []
   action:
   - data: {}
-    entity_id: switch.office_star_wars_frame_399
     service: switch.turn_off
+    target:
+      entity_id:
+      - switch.frame
   - service: light.turn_off
     target:
       device_id: c0c6993d69e66c360b9dc1b7c0ca0115
     data:
       transition: 3
   mode: single
-- id: '1591918064904'
-  alias: Rack Humidity High
-  description: ''
-  trigger:
-  - above: '55'
-    entity_id: sensor.rack_rack_humidity_157
-    for: 00:01:00
-    platform: numeric_state
-  condition: []
-  action:
-  - data:
-      entity_id: climate.rack
-      humidity: 50
-    entity_id: climate.rack
-    service: climate.set_humidity
-  mode: single
 - id: '1592316292544'
   alias: Utility Accents On
   description: ''
   trigger:
-  - entity_id: binary_sensor.utility_utility_motion_440
+  - entity_id: binary_sensor.utility_sensor_motion
     platform: state
     to: 'on'
     from: 'off'
@@ -463,14 +336,14 @@
     state: 'off'
   action:
   - data: {}
-    entity_id: light.utility_utility_accents_446
-    service: light.turn_on
+    entity_id: switch.utility_accents
+    service: switch.turn_on
   mode: single
 - id: '1592493332663'
   alias: Utility Empty
   description: ''
   trigger:
-  - entity_id: binary_sensor.utility_utility_motion_440
+  - entity_id: binary_sensor.utility_sensor_motion
     for: 00:10:00
     platform: state
     to: 'off'
@@ -478,43 +351,43 @@
   condition: []
   action:
   - data: {}
-    entity_id: light.utility_utility_accents_446
+    entity_id: switch.utility_accents
+    service: switch.turn_off
+  - data: {}
+    entity_id: light.utility_spots
     service: light.turn_off
   - data: {}
-    entity_id: light.utility_utility_spots_42
-    service: light.turn_off
-  - data: {}
-    entity_id: light.utility_utility_mirror_83
-    service: light.turn_off
+    entity_id: switch.utility_mirror
+    service: switch.turn_off
   mode: single
 - id: '1592493544443'
   alias: Utility Secondaries On
   description: ''
   trigger:
-  - entity_id: light.utility_utility_spots_42
+  - entity_id: light.utility_spots
     from: 'off'
     platform: state
     to: 'on'
   condition: []
   action:
-  - data:
-      brightness_pct: 100
-    entity_id: light.utility_utility_mirror_83
-    service: light.turn_on
+  - data: {}
+    service: switch.turn_on
+    target:
+      entity_id: switch.utility_mirror
   mode: single
 - id: '1592493583740'
   alias: Utility Secondaries Off
   description: ''
   trigger:
-  - entity_id: light.utility_utility_spots_42
+  - entity_id: light.utility_spots
     from: 'on'
     platform: state
     to: 'off'
   condition: []
   action:
   - data: {}
-    entity_id: light.utility_utility_mirror_83
-    service: light.turn_off
+    entity_id: switch.utility_mirror
+    service: switch.turn_off
   mode: single
 - id: '1592821204215'
   alias: Tumble Finished
@@ -542,7 +415,7 @@
   alias: Bathroom is Creepy
   description: ''
   trigger:
-  - entity_id: binary_sensor.bathroom_bathroom_motion_418
+  - entity_id: binary_sensor.bathroom_sensor_motion
     from: 'off'
     platform: state
     to: 'on'
@@ -563,91 +436,8 @@
       target:
       - media_player.bathroom_dot
     service: notify.alexa_media
-- id: '1592912726773'
-  alias: 'Dishwasher: Set active when power detected'
-  trigger:
-  - above: '10'
-    entity_id: sensor.dishwasher_energy_apparentpower
-    platform: numeric_state
-  condition:
-  - condition: or
-    conditions:
-    - condition: state
-      entity_id: input_select.dishwasher_status
-      state: Dirty
-    - condition: state
-      entity_id: input_select.dishwasher_status
-      state: Clean
-    - condition: state
-      entity_id: input_select.dishwasher_status
-      state: Drying
-  action:
-  - data:
-      entity_id: input_select.dishwasher_status
-      option: Running
-    service: input_select.select_option
-- id: '1592912740774'
-  alias: 'Dishwasher: Set drying when power drops'
-  trigger:
-  - below: '10'
-    entity_id: sensor.dishwasher_energy_apparentpower
-    platform: numeric_state
-  condition:
-  - condition: and
-    conditions:
-    - condition: state
-      entity_id: input_select.dishwasher_status
-      state: Running
-  action:
-  - data:
-      entity_id: input_select.dishwasher_status
-      option: Drying
-    service: input_select.select_option
-- id: '1592912752774'
-  alias: 'Dishwasher: Set clean'
-  trigger:
-  - entity_id: input_select.dishwasher_status
-    for: 0:15:00
-    platform: state
-    to: Drying
-  condition:
-  - condition: and
-    conditions:
-    - condition: state
-      entity_id: input_select.dishwasher_status
-      state: Drying
-  action:
-  - data:
-      entity_id: input_select.dishwasher_status
-      option: Clean
-    service: input_select.select_option
-- id: '1592912769773'
-  alias: 'Dishwasher: Set dirty when power off'
-  trigger:
-  - below: '1'
-    entity_id: sensor.dishwasher_energy_apparentpower
-    platform: numeric_state
-  condition:
-  - condition: and
-    conditions:
-    - below: '1'
-      condition: numeric_state
-      entity_id: sensor.dishwasher_energy_apparentpower
-    - condition: or
-      conditions:
-      - condition: state
-        entity_id: input_select.dishwasher_status
-        state: Clean
-      - condition: state
-        entity_id: input_select.dishwasher_status
-        state: Drying
-  action:
-  - data:
-      entity_id: input_select.dishwasher_status
-      option: Dirty
-    service: input_select.select_option
 - id: '1594041906830'
-  alias: Make tea!
+  alias: 🍆
   description: ''
   trigger:
   - hours: /1
@@ -836,7 +626,7 @@
     value_template: '{{ states.climate.bedroom_aircon.attributes.current_temperature
       > 20 }}'
   - condition: template
-    value_template: '{{states.sensor.dark_sky_cloud_coverage.state | int < 25}}'
+    value_template: '{{states.sensor.dark_sky_cloud_coverage.state | int(100) < 25}}'
   action:
   - data: {}
     entity_id: cover.bedroom_curtain
@@ -870,11 +660,11 @@
   condition: []
   action:
   - data: {}
-    entity_id: switch.bathroom_bathroom_fan_11
+    entity_id: switch.bathroom_fan
     service: switch.turn_on
   mode: single
 - id: '1597424066722'
-  alias: Toggle Bed Lamp Socket
+  alias: Toggle Bed Left Lamp Socket
   description: ''
   trigger:
   - device_id: 77e6b5b4a7764376862a9b1c779101f3
@@ -892,61 +682,6 @@
     entity_id: switch.bedleft_bed_left
     service: switch.turn_on
   mode: single
-- id: '1598858948445'
-  alias: Kickboard Power Colour - 5 (Red Alert)
-  description: ''
-  trigger:
-  - above: '20'
-    entity_id: sensor.electricity_cost
-    platform: numeric_state
-    value_template: '{{states.sensor.electricity_cost.state}}'
-  condition: []
-  action:
-  - data:
-      brightness_pct: 30
-      color_name: red
-      effect: scanner dual
-      transition: 5
-    entity_id: light.kickboard
-    service: light.turn_on
-  mode: single
-- id: '1598859021794'
-  alias: Kickboard Power Colour - 3 (Orange)
-  description: ''
-  trigger:
-  - above: '8'
-    below: '12'
-    entity_id: sensor.electricity_cost
-    platform: numeric_state
-    value_template: '{{states.sensor.electricity_cost.state}}'
-  condition: []
-  action:
-  - data:
-      brightness_pct: 25
-      color_name: orange
-      effect: Solid
-      transition: 5
-    entity_id: light.kickboard
-    service: light.turn_on
-  mode: single
-- id: '1598859111253'
-  alias: Kickboard Power Colour - 1 (Blue Scanner)
-  description: ''
-  trigger:
-  - below: '0'
-    entity_id: sensor.electricity_cost
-    platform: numeric_state
-    value_template: '{{states.sensor.electricity_cost.state}}'
-  condition: []
-  action:
-  - data:
-      brightness_pct: 30
-      color_name: blue
-      effect: scanner dual
-      transition: 5
-    entity_id: light.kickboard
-    service: light.turn_on
-  mode: single
 - id: '1601545494772'
   alias: Network UPS not ONLINE
   description: ''
@@ -960,27 +695,6 @@
     data:
       message: Network UPS lost power
   mode: single
-- id: '1603370348876'
-  alias: 'Garage: Close when driving away'
-  description: ''
-  trigger:
-  - platform: state
-    entity_id: person.howard
-    to: away
-    for: 00:01:30
-  condition:
-  - condition: state
-    entity_id: cover.garagedoor
-    state: open
-    attribute: door_state
-  action:
-  - service: cover.close_cover
-    data: {}
-    entity_id: cover.garagedoor
-  - service: notify.mobile_app_mjolnir
-    data:
-      message: Garage door left open. Closing it now.
-  mode: single
 - id: '1604007680515'
   alias: Utility is Humid
   description: ''
@@ -993,7 +707,7 @@
   action:
   - service: switch.turn_on
     data:
-      entity_id: switch.utility_utility_fan_81
+      entity_id: switch.utility_fan
   mode: single
 - id: '1604008622727'
   alias: Utility is not Humid
@@ -1007,7 +721,7 @@
   action:
   - service: switch.turn_off
     data:
-      entity_id: switch.utility_utility_fan_81
+      entity_id: switch.utility_fan
   mode: single
 - id: '1605100761980'
   alias: Sonos Grouping AM
@@ -1026,7 +740,7 @@
   description: ''
   trigger:
   - platform: state
-    entity_id: binary_sensor.bathroom_bathroom_motion_418
+    entity_id: binary_sensor.bathroom_sensor_motion
     from: 'off'
     to: 'on'
   condition:
@@ -1044,7 +758,7 @@
   description: ''
   trigger:
   - platform: state
-    entity_id: binary_sensor.bedroom_bedroom_motion_450
+    entity_id: binary_sensor.bedroom_sensor_motion
     from: 'off'
     to: 'on'
   condition:
@@ -1061,7 +775,7 @@
   alias: Sonos Bedroom Empty
   description: ''
   trigger:
-  - entity_id: binary_sensor.bedroom_bedroom_motion_450
+  - entity_id: binary_sensor.bedroom_sensor_motion
     for: 00:10:00
     platform: state
     to: 'off'
@@ -1084,110 +798,14 @@
     data:
       master: media_player.office
       entity_id: "{% if states.sensor.last_motion.state %}\n  {% if states.sensor.last_motion.state\
-        \ == \"binary_sensor.dressing_room_dressing_motion_296\" %}\n  media_player.dressing_room\n\
-        \  {% elif states.sensor.last_motion.state == \"binary_sensor.bedroom_bedroom_motion_450\"\
+        \ == \"binary_sensor.sensor_motion\" %}\n  media_player.dressing_room\n  {%\
+        \ elif states.sensor.last_motion.state == \"binary_sensor.bedroom_sensor_motion\"\
         \ %}\n  media_player.bedroom\n  {% elif states.sensor.last_motion.state ==\
-        \ \"binary_sensor.bathroom_bathroom_motion_418\" %}\n  media_player.bathroom\n\
-        \  {% elif states.sensor.last_motion.state == \"binary_sensor.landing_landing_motion_281\"\
+        \ \"binary_sensor.bathroom_sensor_motion\" %}\n  media_player.bathroom\n \
+        \ {% elif states.sensor.last_motion.state == \"binary_sensor.landing_sensor_motion\"\
         \ %}\n  media_player.landing\n  {% elif states.sensor.last_motion.state ==\
-        \ \"binary_sensor.office_office_motion_288\" %}\n  media_player.office  \n\
-        \  {% endif %}\n{% endif %}\n"
-  mode: single
-- id: '1608764628513'
-  alias: 'Catflap Battery Lo: Garage'
-  description: ''
-  trigger:
-  - platform: time_pattern
-    minutes: /5
-  condition:
-  - condition: template
-    value_template: '{{ states.sensor.pet_flap_garage_door_battery_level.state | int
-      < states.input_number.catflapbatterythreshold.state | int }}'
-  action:
-  - service: persistent_notification.create
-    data:
-      title: Garage Catflap Critical
-      message: Battery below 10%
-      notification_id: battery_garage
-  mode: single
-- id: '1608764628521'
-  alias: 'Catflap Battery OK: Garage'
-  description: ''
-  trigger:
-  - platform: time_pattern
-    minutes: /5
-  condition:
-  - condition: template
-    value_template: '{{ states.sensor.pet_flap_garage_door_battery_level.state | int
-      >= states.input_number.catflapbatterythreshold.state | int }}'
-  action:
-  - service: persistent_notification.dismiss
-    data:
-      notification_id: battery_garage
-  mode: single
-- id: '1608764628522'
-  alias: 'Catflap Battery Lo: Utility'
-  description: ''
-  trigger:
-  - platform: time_pattern
-    minutes: /5
-  condition:
-  - condition: template
-    value_template: '{{ states.sensor.pet_flap_utility_battery_level.state | int <
-      states.input_number.catflapbatterythreshold.state | int }}'
-  action:
-  - service: persistent_notification.create
-    data:
-      title: Utility Catflap Critical
-      message: Battery below 10%
-      notification_id: battery_utility
-  mode: single
-- id: '1608764628523'
-  alias: 'Catflap Battery OK: Utility'
-  description: ''
-  trigger:
-  - platform: time_pattern
-    minutes: /5
-  condition:
-  - condition: template
-    value_template: '{{ states.sensor.pet_flap_utility_battery_level.state | int >=
-      states.input_number.catflapbatterythreshold.state | int }}'
-  action:
-  - service: persistent_notification.dismiss
-    data:
-      notification_id: battery_utility
-  mode: single
-- id: '1608764628525'
-  alias: 'Catflap Battery Low: Landing'
-  description: ''
-  trigger:
-  - platform: time_pattern
-    minutes: /5
-  condition:
-  - condition: template
-    value_template: '{{ states.sensor.pet_flap_landing_battery_level.state | int <
-      states.input_number.catflapbatterythreshold.state | int }}'
-  action:
-  - service: persistent_notification.create
-    data:
-      title: Landing Catflap Critical
-      message: Battery below 10%
-      notification_id: battery_landing
-  mode: single
-- id: '1608764628526'
-  alias: 'Catflap Battery OK: Landing'
-  description: ''
-  trigger:
-  - platform: time_pattern
-    minutes: /5
-  condition:
-  - condition: template
-    value_template: '{{ states.sensor.pet_flap_landing_battery_level.state | int >=
-      states.input_number.catflapbatterythreshold.state | int }}'
-  action:
-  - service: persistent_notification.dismiss
-    data:
-      notification_id: battery_landing
+        \ \"binary_sensor.office_sensor_motion\" %}\n  media_player.office  \n  {%\
+        \ endif %}\n{% endif %}\n"
   mode: single
 - id: '1609764156636'
   alias: Toggle Guest Lamp Socket
@@ -1209,29 +827,25 @@
     entity_id: switch.guest_lamp
   mode: single
 - id: '1609953544801'
-  alias: Hall On Front Door Motion
+  alias: Hall On Front Door Person
   description: ''
   trigger:
-  - type: motion
-    platform: device
-    device_id: 9869cf2a35cedb3f192e539bc29d6c9a
+  - platform: state
     entity_id: binary_sensor.motion_front_door
-    domain: binary_sensor
-    for:
-      hours: 0
-      minutes: 0
-      seconds: 3
+    to: person
+    attribute: event_object
   condition:
-  - condition: numeric_state
-    entity_id: sun.sun
-    value_template: '{{ state_attr(''sun.sun'', ''elevation'') }}'
-    below: '1.5'
+  - condition: state
+    entity_id: sensor.daylight
+    state: 'off'
   action:
   - service: light.turn_on
     data:
       brightness_pct: 30
-      transition: 5
-    entity_id: light.hall_hall_spots_146
+      transition: 3
+    target:
+      entity_id:
+      - light.hall_spots
   mode: single
 - id: '1611135653017'
   alias: Garden Lights - On for Jo on Weekdays
@@ -1257,10 +871,7 @@
     entity_id: sun.sun
     value_template: '{{ state_attr(''sun.sun'', ''elevation'') }}'
     above: '1.5'
-  condition:
-  - condition: state
-    entity_id: light.front_parking_326
-    state: 'on'
+  condition: []
   action:
   - scene: scene.garden_lights_off
   mode: single
@@ -1269,7 +880,7 @@
   description: ''
   trigger:
   - platform: time
-    at: '15:58:00'
+    at: '15:58'
   condition:
   - condition: template
     value_template: '{{ is_state(''binary_sensor.workday'', ''on'')  }}'
@@ -1277,40 +888,15 @@
   - service: light.turn_on
     data:
       brightness_pct: 100
-    entity_id: light.garden_room_garden_room_wall_69
-  mode: single
-- id: '1612536407955'
-  alias: Doorbell
-  description: ''
-  trigger:
-  - platform: state
-    entity_id: binary_sensor.doorbell_doorbell
-    to: 'on'
-  condition:
-  - condition: state
-    entity_id: input_boolean.sleep_mode
-    state: 'off'
-  action:
-  - service: notify.alexa_media
-    data:
-      data:
-        method: speak
-        type: announce
-      message: There's somebody at the door!
-      target:
-      - media_player.office_dot
-      - media_player.landing_dot
-      - media_player.hall_dot
-      - media_player.bedroom_dot
-      - media_player.kitchen_dot
-      - media_player.garage_dot
+    target:
+      entity_id: light.garden_room_lights
   mode: single
 - id: '1613653390691'
   alias: Turn on Lego with Living Room Dim
   description: ''
   trigger:
   - platform: state
-    entity_id: light.living_room_living_room_wall_64
+    entity_id: light.living_room_lights
     to: 'on'
   condition: []
   action:
@@ -1323,20 +909,25 @@
   description: ''
   trigger:
   - platform: state
-    entity_id: binary_sensor.landing_landing_motion_281
+    entity_id: binary_sensor.landing_sensor_motion
     to: 'off'
     for: 00:10:00
   condition: []
   action:
   - service: light.turn_off
-    data: {}
-    entity_id: light.landing_landing_spots_151
+    data:
+      transition: 3
+    target:
+      entity_id:
+      - light.landing_spots
   - service: light.turn_off
     data: {}
-    entity_id: light.landing_pendant_224
+    target:
+      entity_id:
+      - light.landing_pendant
   mode: single
 - id: '1614713071524'
-  alias: Nanoleaf - off when TV plays
+  alias: 'Living Room: Nanoleaf and Hall - off when TV plays'
   description: ''
   trigger:
   - platform: state
@@ -1350,10 +941,16 @@
   - service: light.turn_off
     data:
       transition: 3
-    entity_id: light.nanoleaf
+    target:
+      entity_id:
+      - light.nanoleaf
+      - light.hall_spots
+  - service: switch.turn_off
+    target:
+      entity_id: switch.hall_lamp
   mode: single
 - id: '1614713176005'
-  alias: Nanoleaf - on when TV stops
+  alias: 'Living Room: Nanoleaf - on when TV stops'
   description: ''
   trigger:
   - platform: template
@@ -1366,4 +963,519 @@
       transition: 3
       brightness_pct: 20
     entity_id: light.nanoleaf
+  mode: single
+- id: '1616440741883'
+  alias: Hall Lamp on Motion
+  description: ''
+  trigger:
+  - platform: state
+    to: 'on'
+    entity_id: binary_sensor.front_sensor_motion
+  condition:
+  - condition: template
+    value_template: '{{ is_state("sensor.livingroomtv_playing", "False") }}'
+  - condition: state
+    entity_id: input_boolean.sleep_mode
+    state: 'off'
+  action:
+  - service: switch.turn_on
+    target:
+      device_id: d2f24f72fcde6bed3c71bad706347a23
+  mode: single
+- id: '1616440855602'
+  alias: Hall Lamp off
+  description: ''
+  trigger:
+  - platform: state
+    from: 'on'
+    to: 'off'
+    for: 00:01:30
+    entity_id: binary_sensor.front_sensor_motion
+  condition: []
+  action:
+  - service: switch.turn_off
+    target:
+      device_id: d2f24f72fcde6bed3c71bad706347a23
+  mode: single
+- id: '1617554505567'
+  alias: Restart Tasmota on HA Start
+  description: ''
+  trigger:
+  - platform: homeassistant
+    event: start
+  condition: []
+  action:
+  - delay:
+      hours: 0
+      minutes: 1
+      seconds: 30
+      milliseconds: 0
+  - service: mqtt.publish
+    data:
+      topic: cmnd/tasmotas/Restart
+      payload: '1'
+  mode: single
+- id: '1618782340583'
+  alias: 'anpr: api limit reached'
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.plate_recognizer_api_call_remaining
+    below: '5'
+  action:
+  - service: persistent_notification.create
+    data:
+      message: ANPR Limit
+      notification_id: anpr_limit
+  mode: single
+- id: '1619523671471'
+  alias: Bathroom fan - off after 15 mins if lights off
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: light.bathroom_spots
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+      milliseconds: 0
+  condition:
+  - condition: state
+    entity_id: switch.bathroom_fan
+    state: 'on'
+  action:
+  - service: switch.turn_off
+    target:
+      entity_id: switch.bathroom_fan
+  mode: single
+- id: '1620125636331'
+  alias: LaMetric - Notify on Office Music
+  description: ''
+  trigger:
+  - platform: event
+    event_type: state_changed
+    event_data:
+      entity_id: media_player.office
+  condition:
+  - condition: template
+    value_template: '{{ is_state(''media_player.office'',''playing'') }}'
+  action:
+  - service: notify.lametric
+    data:
+      message: '{{ state_attr(''media_player.office'',''media_title'') }} - {{ state_attr(''media_player.office'',''media_artist'')
+        }}'
+      target: LaMetric-Office
+      data:
+        icon: i39353
+        icon_type: none
+        cycles: 2
+  mode: single
+- id: '1620366297086'
+  alias: LaMetric - Notify on Kitchen Music
+  description: ''
+  trigger:
+  - platform: event
+    event_type: state_changed
+    event_data:
+      entity_id: media_player.kitchen
+  condition: []
+  action:
+  - service: notify.lametric
+    data:
+      message: '{{ state_attr(''media_player.kitchen'',''media_title'') }} - {{ state_attr(''media_player.kitchen'',''media_artist'')
+        }}'
+      target: LaMetric-Down
+      data:
+        icon: i39353
+        icon_type: none
+        cycles: 2
+  mode: single
+- id: '1621698150388'
+  alias: 'Water Heater: Off'
+  description: ''
+  trigger:
+  - platform: time
+    at: 04:30
+  condition: []
+  action:
+  - service: switch.turn_off
+    target:
+      entity_id:
+      - switch.immersion1
+      - switch.immersion2
+  mode: single
+- id: '1621698180791'
+  alias: 'Water Heater: On'
+  description: ''
+  trigger:
+  - platform: time
+    at: 00:30
+  condition: []
+  action:
+  - service: switch.turn_on
+    target:
+      entity_id: switch.immersion1
+  mode: single
+- id: '1622715401093'
+  alias: Sonos Power On
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: input_boolean.sonos_power
+    to: 'on'
+  condition: []
+  action:
+  - service: script.sonos_power_on
+  mode: single
+- id: '1622715424518'
+  alias: Sonos Power Off
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: input_boolean.sonos_power
+    to: 'off'
+  condition: []
+  action:
+  - service: script.sonos_power_off
+  mode: single
+- id: '1625568053017'
+  alias: Toggle Bed Right Lamp Socket
+  description: ''
+  trigger:
+  - platform: device
+    type: turned_off
+    device_id: 90f3c66947d5ca44dc5f5c909a6dc4e6
+    entity_id: switch.bed_right
+    domain: switch
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 3
+  condition: []
+  action:
+  - data: {}
+    service: switch.turn_on
+    entity_id: switch.bed_right
+  mode: single
+- id: '1625669002381'
+  alias: Deb Leaves School
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.deborah_s_iphone_zone_name
+    to: Away
+  condition:
+  - condition: template
+    value_template: '{{trigger.from_state.state == "School"}}'
+  - condition: template
+    value_template: '{{states("sensor.deborah_s_iphone_distance") | float > 0}}'
+  action:
+  - service: notify.alexa_media
+    data:
+      data:
+        method: speak
+        type: announce
+      message: Deb has left school, and is {{states("sensor.deborah_s_iphone_travel_time")}}
+        away.
+      target:
+      - media_player.office_dot
+      - media_player.landing_dot
+      - media_player.hall_dot
+      - media_player.bedroom_dot
+      - media_player.kitchen_dot
+      - media_player.garage_dot
+  mode: single
+- id: '1625670981575'
+  alias: Deb Arrives Home
+  trigger:
+  - platform: state
+    entity_id: sensor.deborah_s_iphone_zone_name
+    to: Home
+    from: Away
+  - platform: template
+    value_template: '{{states("sensor.deborah_s_iphone_distance") | float <= 0.2}}'
+  condition:
+  - condition: state
+    entity_id: input_boolean.sleep_mode
+    state: 'off'
+  action:
+  - service: notify.alexa_media
+    data:
+      data:
+        method: speak
+        type: announce
+      message: Bee is home!
+      target:
+      - media_player.office_dot
+      - media_player.landing_dot
+      - media_player.hall_dot
+      - media_player.bedroom_dot
+      - media_player.kitchen_dot
+      - media_player.garage_dot
+  mode: single
+- id: '1627340686457'
+  alias: Refresh Octopus on HA Start
+  description: ''
+  trigger:
+  - platform: homeassistant
+    event: start
+  condition: []
+  action:
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 15
+      milliseconds: 0
+  - service: octopusagile.update_timers
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 15
+      milliseconds: 0
+  - service: octopusagile.half_hour
+  mode: single
+- id: '1633880906479'
+  alias: Bathroom Accents On (Night)
+  description: ''
+  trigger:
+  - entity_id: binary_sensor.bathroom_sensor_motion
+    from: 'off'
+    platform: state
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 3
+      milliseconds: 0
+  condition:
+  - condition: state
+    entity_id: input_boolean.sleep_mode
+    state: 'on'
+  action:
+  - service: scene.turn_on
+    data: {}
+    target:
+      entity_id: scene.bathroom_accents_night
+  mode: single
+- id: '1633915325074'
+  alias: Bathroom All Off (night)
+  description: ''
+  trigger:
+  - entity_id: binary_sensor.bathroom_sensor_motion
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+    from: 'on'
+    platform: state
+    to: 'off'
+  condition:
+  - condition: state
+    entity_id: input_boolean.sleep_mode
+    state: 'on'
+  action:
+  - data:
+      transition: 3
+    service: light.turn_off
+    target:
+      entity_id: light.bathroom_spots
+  - data: {}
+    service: light.turn_off
+    target:
+      entity_id:
+      - switch.bathroom_accents
+      - switch.bathroom_mirror
+  - data: {}
+    service: light.turn_off
+    target:
+      entity_id:
+      - light.shelly_bathroom_mirror_rgb
+  mode: single
+- id: '1636843420345'
+  alias: Kitchen Pantry Motion On
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.pantry_sensor_motion
+    to: 'on'
+  condition: []
+  action:
+  - service: light.turn_on
+    data:
+      brightness_pct: 100
+    target:
+      entity_id: light.pantry_light
+  mode: single
+- id: '1636843519137'
+  alias: Kitchen Pantry Motion Off
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.pantry_sensor_motion
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  condition: []
+  action:
+  - service: light.turn_off
+    data:
+      transition: 3
+    target:
+      entity_id: light.pantry_light
+  mode: single
+- id: '1636912488167'
+  alias: Bathroom Secondaries On
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: light.bathroom_spots
+    to: 'on'
+  condition: []
+  action:
+  - service: switch.turn_on
+    target:
+      entity_id: switch.bathroom_mirror
+  mode: single
+- id: '1636912530750'
+  alias: Bathroom Secondaries Off
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: light.bathroom_spots
+    to: 'off'
+  condition: []
+  action:
+  - service: switch.turn_off
+    target:
+      entity_id: switch.bathroom_mirror
+  mode: single
+- id: '1637317322604'
+  alias: Dressing Room Switch Change
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: switch.dressing_room_wall
+  condition: []
+  action:
+  - service_template: light.turn_{{ trigger.to_state.state }}
+    entity_id: light.wardrobes_level_on_off
+  mode: single
+- id: '1637597143218'
+  alias: 'Kitchen: Oven Finished'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.oven_operation_state
+    from: Run
+    to: Finished
+  condition: []
+  action:
+  - service: notify.living_room_tv
+    data:
+      message: Oven has Finished
+  - service: notify.alexa_media_living_room_dot
+    data:
+      message: The oven has finished.
+  mode: single
+- id: '1637598412600'
+  alias: 'Kitchen: Combi Finished '
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.combi_operation_state
+    from: Run
+    to: Finished
+  condition: []
+  action:
+  - service: notify.living_room_tv
+    data:
+      message: The combi oven has finished.
+      target:
+      - media_player.living_room_dot
+      - media_player.landing_dot
+      - media_player.hall_dot
+      - media_player.bedroom_dot
+      data:
+        method: speak
+        type: announce
+  mode: single
+- id: '1637662746920'
+  alias: 'Water Heater: Off at Temp'
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.immersion1_ds18b20_temperature
+    above: '55'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 30
+      milliseconds: 0
+  condition: []
+  action:
+  - service: switch.turn_off
+    target:
+      entity_id:
+      - switch.immersion1
+      - switch.immersion2
+  mode: single
+- id: '1637701072083'
+  alias: Wake iPad on Motion
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.kitchen_ipad_sensor_motion
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: input_boolean.sleep_mode
+    state: 'off'
+  action:
+  - service: notify.mobile_app_kiosk
+    data:
+      message: iPad Wake on Motion
+  mode: single
+- id: '1637762246682'
+  alias: Kitchen iPad Motion
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.kitchen_ipad_sensor_motion
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 2
+      milliseconds: 0
+  condition:
+  - condition: state
+    entity_id: input_boolean.sleep_mode
+    state: 'off'
+  action:
+  - service: script.ipad_unlock
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - service: script.ipad_start_ha
+  mode: single
+- id: '1641085756003'
+  alias: 'Living Room: nanoleaf off on statechange if tv playing'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: light.nanoleaf
+  condition:
+  - condition: template
+    value_template: '{{ is_state(''media_player.living_room_shield'',''playing'')
+      }}'
+  action:
+  - service: light.turn_off
+    target:
+      entity_id: light.nanoleaf
   mode: single

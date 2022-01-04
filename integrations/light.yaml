@@ -1,5 +1,43 @@
 light:
-  - platform: nanoleaf
-    name: nanoleaf
-    host: 192.168.1.169
-    token: CiZsFFfTMsIB5encitG7SKyMymULY6GA
+  - platform: group
+    name: Kitchen Spots
+    entities:
+      - light.back_spots
+      - light.front_spots
+
+  - platform: group
+    name: Living Room All
+    entities:
+      - light.living_room_lights
+      - light.nanoleaf
+      - light.sideboard_lamp
+      # - switch.lego
+
+  - platform: group
+    name: Kitchen Handles
+    entities:
+      - light.worktop_handles
+      - light.island_handles_short
+      - light.island_handles_long
+
+  - platform: group
+    name: Kitchen Shelves
+    entities:
+      - light.shelf_left
+      - light.shelf_long
+      - light.shelf_right
+
+  - platform: group
+    name: Kitchen Accents
+    entities:
+      - light.kitchen_handles
+      - light.kitchen_shelves
+
+  - platform: group
+    name: Kitchen LEDs
+    entities:
+      - light.skylight
+      - light.ceiling_back
+      - light.ceiling_front
+      - light.island_plinth
+      - light.window_plinth

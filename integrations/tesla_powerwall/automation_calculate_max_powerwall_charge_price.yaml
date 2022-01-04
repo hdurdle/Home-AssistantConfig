@@ -1,0 +1,78 @@
+automation:
+  - id: calculate_max_powerwall_charge_price
+    alias: "Powerwall work out what prices to charge below"
+    mode: single
+
+    description: >
+      Work out what price to charge below based on charge level, target and prices
+      Assumptions:
+      Powerwall useable Capacity: 26.4 kWh
+      Max Charge Level is (26.4 - (solar_forecast - tomorrow_solar_threshold) + overnight_usage)/26.4
+      ChargeRate = 7.2 kW
+
+    trigger:
+      - platform: state
+        id: "rates"
+        entity_id: octopusagile.rates
+      - platform: homeassistant
+        id: "start"
+        event: start
+      - platform: event
+        id: "reload"
+        event_type: automation_reloaded
+
+    condition:
+      - condition: not
+        conditions:
+          condition: time
+          after: "06:00:00"
+          before: "21:00:00"
+      - condition: state
+        entity_id: sensor.solaredge_status
+        state: "Sleep"
+    variables:
+      overnight_usage_percent: 15.0
+      tomorrow_solar_threshold: 8.0
+      charge_rate: 3.6
+      powerwall_capacity: 26.4
+      percentage_per_half_hour: 6.8
+      #{% set percentage_per_half_hour = (100*(charge_rate/2.0)/powerwall_capacity) %}
+
+    action:
+      - choose:
+          - conditions: "{{ states.octopusagile.rates == none  or  (states.octopusagile.rates.attributes.values() | count) < 34 or  (states.octopusagile.rates.attributes.values() | count) > 52  or (states('sensor.forecastsolar_tomorrow') | int) == 0 }}"
+            sequence:
+              - service: notify.slack
+                data:
+                  title: Powerwall Error
+                  message: "Error setting overnight charging price, will try again within the next half hour."
+
+        default:
+          - service: input_number.set_value
+            target:
+              entity_id: input_number.overnight_powerwall_max_charge
+            data:
+              # Use tomorrow forecast if today forecast is showing ZERO - what if forecast is actually zero ?
+              value: "{% set solar_forecast = (states('sensor.forecastsolar_tomorrow') | float) if now().strftime('%-H') | int > 12 else (states('sensor.forecastsolar_today') | float) %}{{ ([0,[(100 * (powerwall_capacity - (solar_forecast - tomorrow_solar_threshold))) / powerwall_capacity,100]|min]|max)|int }}"
+          - service: input_number.set_value
+            target:
+              entity_id: input_number.powerwall_charge_below_x_pence
+            data:
+              # Take the 20 last prices for the list (next 10 hours), sort them by price and take the 8th for example if 4 hours charging (80% charging) is required.
+              #value: "{% set solar_forecast = states('sensor.solcast_forecast_tomorrow') | float if now().strftime('%-H') | int > 12 else states('sensor.solcast_forecast') %}{% set rates =  states.octopusagile.rates.attributes.values() | list %}{% set octopusrates = rates[-18:] | sort %}{% set charge_slots_needed =  (0.5 + (((states('input_number.overnight_powerwall_max_charge') | float) + overnight_usage_percent - (states('sensor.powerwall_charge')  | float) )/percentage_per_half_hour)) | int  %}{{  (octopusrates[charge_slots_needed -1] | float )  }}"
+              #value: "{% set solar_forecast = states('sensor.solcast_forecast_tomorrow') | float if now().strftime('%-H') | int > 12 else states('sensor.solcast_forecast') %}{% set rates =  states.octopusagile.rates.attributes.values() | list %}{% set octopusrates = rates[-18:] | sort %}{% set charge_slots_needed =  (0.5 + (((states('input_number.overnight_powerwall_max_charge') | float) + overnight_usage_percent - (states('sensor.powerwall_charge')  | float) )/percentage_per_half_hour)) | int  %}{% if charge_slots_needed == 0 %}0.0{% else %}{{  (octopusrates[charge_slots_needed -1] | float )  }}{% endif %}"
+              value: "{% set howmanyrates = 18 if now().strftime('%-H') | int > 12 else (18-now().strftime('%-H') | int) %}{% set solar_forecast = (states('sensor.forecastsolar_tomorrow') | float) if now().strftime('%-H') | int > 12 else (states('sensor.forecastsolar_today') | float) %}{% set rates =  states.octopusagile.rates.attributes.values() | list %}{% set octopusrates = rates[-howmanyrates:] | sort %}{% set charge_slots_needed =  (0.5 + (((states('input_number.overnight_powerwall_max_charge') | float) + overnight_usage_percent - (states('sensor.powerwall_charge')  | float) )/percentage_per_half_hour)) | int  %}{% if charge_slots_needed == 0 %}0.0{% else %}{{  (octopusrates[charge_slots_needed -1] | float )  }}{% endif %}"
+          - service: notify.slack
+            data:
+              title: "Solar Today/Tomorrow: {{ states('sensor.forecastsolar_today') | int }}/{{states('sensor.forecastsolar_tomorrow') | int }}kWh"
+              message: >
+
+                {% set charge_slots_needed =  (0.5 + (((states('input_number.overnight_powerwall_max_charge') | float) + overnight_usage_percent - (states('sensor.powerwall_charge')  | float) )/percentage_per_half_hour)) | int  %}
+
+                Powerwall Charge Level: {{ states('sensor.powerwall_charge') | int }}%                    
+
+                {% if charge_slots_needed > 0 %}Powerwall Charging overnight to {{ states('input_number.overnight_powerwall_max_charge') | int }}%
+
+                {{ charge_slots_needed }} half hour periods.  
+
+                Max Price of {{ states('input_number.powerwall_charge_below_x_pence')  }}p{% endif %}

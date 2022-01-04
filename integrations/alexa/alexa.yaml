@@ -1,0 +1,24 @@
+alexa:
+  flash_briefings:
+    password: !secret alexa_flash_password
+    schoolrun:
+      - title: Time to The Downs
+        text: >
+          Time to The Downs is {{ states("sensor.school_run") }} minutes.
+    hacs:
+      - title: HACS update info
+        text: >
+          There are {{ states('sensor.hacs') }} pending HACS updates.
+
+# stuff to consider -
+# - rain/sun/ temp,
+# - did hot water run last night?
+# - i8 fuel (less than a quarter, quarter, half, three q, nearly full)
+# - i8 battery charge
+# - did phoenix visit?
+# - other cats at home
+# report on exception only:
+# - all servers running okay?
+# - all batteries okay?
+# - durdle cert
+# put bin out today

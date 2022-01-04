@@ -1,0 +1,25 @@
+sensor:
+  - platform: template
+    sensors:
+      last_motion:
+        friendly_name: "Last Motion"
+        unique_id: "last_motion"
+        value_template: >
+          {% set sensors = [states.binary_sensor.motion_garage, 
+                          states.binary_sensor.office_desk_motion, 
+                          states.binary_sensor.bedroom_sensor_motion, 
+                          states.binary_sensor.bathroom_sensor_motion, 
+                          states.binary_sensor.dressing_room_sensor_motion, 
+                          states.binary_sensor.front_sensor_motion,
+                          states.binary_sensor.kitchen_ipad_sensor_motion,
+                          states.binary_sensor.kitchen_sink_sensor_motion,
+                          states.binary_sensor.kitchen_back_sensor_motion,
+                          states.binary_sensor.kitchen_util_sensor_motion,
+                          states.binary_sensor.landing_sensor_motion, 
+                          states.binary_sensor.office_sensor_motion, 
+                          states.binary_sensor.garage_sensor_motion, 
+                          states.binary_sensor.pantry_sensor_motion,
+                          states.binary_sensor.utility_sensor_motion] %}
+          {% set time = sensors | map(attribute='last_changed') | max %}
+          {% set sensor = (sensors | selectattr('last_changed','eq', time) | list)[0] %}
+          {{sensor.name | replace(' Sensor: Motion','')}}

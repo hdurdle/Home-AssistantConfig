@@ -1,42 +1,81 @@
-default_config:
-
 homeassistant:
   customize: !include customize.yaml
   packages: !include_dir_named integrations
+  allowlist_external_dirs:
+    - /config/www/cam_snaps
+
+default_config:
+
+http:
+  use_x_forwarded_for: true
+  trusted_proxies: !secret trusted_proxies
 
 logger:
-  default: info
+  default: warning
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+frontend:
+  extra_module_url:
+    - /local/community/lovelace-card-mod/card-mod.js
+
+panel_custom:
+  - name: server_control
+    sidebar_title: Server Control
+    sidebar_icon: mdi:cog-transfer
+    js_url: /api/hassio/app/entrypoint.js
+    url_path: "config/server_control"
+    embed_iframe: true
+    require_admin: true
+    config:
+      ingress: core_configurator
+
+lovelace:
+  mode: storage
+  dashboards:
+    ui-lego:
+      mode: yaml
+      title: Lego
+      icon: mdi:toy-brick
+      show_in_sidebar: true
+      filename: ui-lego.yaml
 
 recorder:
   auto_purge: true
-  purge_keep_days: 63
+  purge_keep_days: 90
   db_url: !secret mariadb_connection_url
   exclude:
     domains:
       - automation
-      - updater
-      - timer
-      - http
       - camera
+      - http
+      - image_processing
+      - select
+      - sun
+      - timer
+      - updater
     entity_globs:
       - sensor.weather_*
       - sensor.dark_sky_*
       - sensor.*lux*
-      - sensor.*humidity*
+      - sensor.*_illuminance
       - sensor.hp_officejet_*
       - sensor.*_uv_*
+      - sensor.*_ultraviolet
       - sensor.motion_recording_*
-      - sensor.octopus_*
       - switch.ir_active_*
       - switch.record_always_*
       - switch.record_motion_*
       - switch.status_light_on_*
-      - cover.*_roman
-      - cover.*_privacy
+      - sensor.time*
+      - sensor.date*
+      - binary_sensor.sun_*
     entities:
       - sun.sun # Don't record sun data
+      - sensor.daylight
       - sensor.last_boot # Comes from 'systemmonitor' sensor platform
-      - sensor.date
       - sensor.hacs
       - sensor.mjolnir_last_update_trigger
       - sensor.mjolnir_average_active_pace
@@ -51,11 +90,6 @@ recorder:
       - sensor.network_ups_serial
       - sensor.server_ups_serial
       - binary_sensor.updater
-      - binary_sensor.i8_lights_parking
-    event_types:
-      - call_service # Don't record service calls
-
-alexa: !include alexa.yaml
-automation: !include automations.yaml
-script: !include scripts.yaml
-scene: !include scenes.yaml
+      - sensor.icloud3_event_log # ignore the icloud3 event log
+      - sensor.deborah_s_iphone_info
+      - sensor.mjolnir_info

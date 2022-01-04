@@ -1,0 +1,19 @@
+automation:
+  - id: dishwasher_set_drying_on_power_change
+    alias: 'Dishwasher: Set drying on power change'
+    trigger:
+      - below: '10'
+        entity_id: sensor.dishwasher_energy_apparentpower
+        platform: numeric_state
+    condition:
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: input_select.dishwasher_status
+            state: Running
+    action:
+      - data:
+          entity_id: input_select.dishwasher_status
+          option: Drying
+        service: input_select.select_option
+    mode: single

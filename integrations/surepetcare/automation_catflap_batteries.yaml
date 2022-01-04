@@ -1,0 +1,104 @@
+automation:
+- id: automation_catflap_garage_battery_low
+  alias: 'Catflap Garage Battery Low'
+  description: ''
+  trigger:
+    - platform: time_pattern
+      minutes: /45
+    - platform: homeassistant
+      id: "start"
+      event: start
+    - platform: event
+      id: "reload"
+      event_type: automation_reloaded    
+  condition:
+  - condition: template
+    value_template: '{{ states.sensor.pet_flap_garage_door_battery_level.state | int
+      < states.input_number.catflapbatterythreshold.state | int }}'
+  action:
+  - service: persistent_notification.create
+    data:
+      title: Garage Catflap Critical
+      message: Battery below 10%
+      notification_id: battery_garage
+  mode: single
+
+- id: automation_catflap_garage_battery_ok
+  alias: 'Catflap Garage Battery OK'
+  description: ''
+  trigger:
+  - platform: time_pattern
+    minutes: /15
+  condition:
+  - condition: template
+    value_template: '{{ states.sensor.pet_flap_garage_door_battery_level.state | int
+      >= states.input_number.catflapbatterythreshold.state | int }}'
+  action:
+  - service: persistent_notification.dismiss
+    data:
+      notification_id: battery_garage
+  mode: single
+- id: automation_catflap_utility_battery_low
+  alias: 'Catflap Utility Battery Low'
+  description: ''
+  trigger:
+  - platform: time_pattern
+    minutes: /15
+  condition:
+  - condition: template
+    value_template: '{{ states.sensor.cat_flap_utility_battery_level.state | int <
+      states.input_number.catflapbatterythreshold.state | int }}'
+  action:
+  - service: persistent_notification.create
+    data:
+      title: Utility Catflap Critical
+      message: Battery below 10%
+      notification_id: battery_utility
+  mode: single
+- id: automation_catflap_utility_battery_ok
+  alias: 'Catflap Utility Battery OK'
+  description: ''
+  trigger:
+  - platform: time_pattern
+    minutes: /15
+  condition:
+  - condition: template
+    value_template: '{{ states.sensor.cat_flap_utility_battery_level.state | int >=
+      states.input_number.catflapbatterythreshold.state | int }}'
+  action:
+  - service: persistent_notification.dismiss
+    data:
+      notification_id: battery_utility
+  mode: single
+- id: automation_catflap_landing_battery_low
+  alias: 'Catflap Landing Battery Low'
+  description: ''
+  trigger:
+  - platform: time_pattern
+    minutes: /15
+  condition:
+  - condition: template
+    value_template: '{{ states.sensor.cat_flap_landing_battery_level.state | int <
+      states.input_number.catflapbatterythreshold.state | int }}'
+  action:
+  - service: persistent_notification.create
+    data:
+      title: Landing Catflap Critical
+      message: Battery below 10%
+      notification_id: battery_landing
+  mode: single
+- id: automation_catflap_landing_battery_ok
+  alias: 'Catflap Landing Battery OK'
+  description: ''
+  trigger:
+  - platform: time_pattern
+    minutes: /15
+  condition:
+  - condition: template
+    value_template: '{{ states.sensor.cat_flap_landing_battery_level.state | int >=
+      states.input_number.catflapbatterythreshold.state | int }}'
+  action:
+  - service: persistent_notification.dismiss
+    data:
+      notification_id: battery_landing
+  mode: single

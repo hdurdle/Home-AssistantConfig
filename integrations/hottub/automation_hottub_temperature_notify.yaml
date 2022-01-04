@@ -1,0 +1,54 @@
+automation:
+- id: automation_hottub_temperature_low
+  alias: 'Hot Tub Temperature Low'
+  description: ''
+  trigger:
+    - platform: time_pattern
+      minutes: /30
+    - platform: homeassistant
+      id: "start"
+      event: start
+    - platform: event
+      id: "reload"
+      event_type: automation_reloaded    
+  condition:
+    alias: Temp available and low
+    condition: and
+    conditions: 
+      - condition: template
+        value_template: "{{ (state_attr('climate.hot_tub_climate','current_temperature') | float(-1) - state_attr('climate.hot_tub_climate','temperature') | float(-1)) | abs >= 2 }}"
+      - condition: template
+        value_template: "{{ state_attr('climate.hot_tub_climate', 'current_temperature') != None }}"
+  action:
+  - service: persistent_notification.create
+    data:
+      title: Hot Tub Temperature Low
+      message: Hot Tub Temperature is at {{state_attr('climate.hot_tub_climate','current_temperature')}}° (should be {{state_attr('climate.hot_tub_climate','temperature')}}°).
+      notification_id: hottub_temp
+  mode: single
+
+- id: automation_hottub_temperature_ok
+  alias: 'Hot Tub Temperature OK'
+  description: ''
+  trigger:
+  - platform: time_pattern
+    minutes: /30
+  - platform: homeassistant
+    id: "start"
+    event: start
+  - platform: event
+    id: "reload"
+    event_type: automation_reloaded        
+  condition:
+    alias: Temp unavailable or okay
+    condition: or
+    conditions:
+      - condition: template
+        value_template: "{{(state_attr('climate.hot_tub_climate','current_temperature') | float(-1) - state_attr('climate.hot_tub_climate','temperature') | float(-1)) | abs <= 1}}"
+      - condition: template
+        value_template: "{{ state_attr('climate.hot_tub_climate', 'current_temperature') == None }}"
+  action:
+  - service: persistent_notification.dismiss
+    data:
+      notification_id: hottub_temp
+  mode: single

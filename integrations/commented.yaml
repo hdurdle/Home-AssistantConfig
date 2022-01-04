@@ -1,7 +1,0 @@
-#neato:
-#  username: !secret neato_username
-#  password: !secret neato_password
-
-#withings:
-#  client_id: !secret withings_id
-#  client_secret: !secret withings_secret

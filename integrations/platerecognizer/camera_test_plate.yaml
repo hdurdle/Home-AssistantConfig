@@ -1,0 +1,4 @@
+camera:
+  - name: Test Plate
+    platform: local_file
+    file_path: /config/images/test_plate.jpg

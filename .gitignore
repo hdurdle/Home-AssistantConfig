@@ -7,12 +7,17 @@
 !.gitignore
 !*.md
 !integrations
+!integrations/*
 
 # Ignore folders.
 .storage
 .cloud
 .google.token
 tts
+platerecogniser
+ssh
+www/cam_snaps
+/ic3_config
 
 # Ensure these YAML files are ignored, otherwise your secret data/credentials will leak.
 ip_bans.yaml

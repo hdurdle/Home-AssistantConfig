@@ -1,0 +1,10 @@
+sensor:
+  - platform: template
+    sensors:
+      octopus_go_current_price:
+        unique_id: octopus_go_current_price
+        friendly_name: "Octopus Go Price"
+        unit_of_measurement: "p/kWh"
+        value_template: >
+          {% if states.sensor.time.state < '00:30' 
+          or states.sensor.time.state > '04:30' %}15{% else %}5{% endif %}

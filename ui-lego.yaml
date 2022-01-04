@@ -1,0 +1,1318 @@
+kiosk_mode:
+  entity_settings:
+    - entity:
+        input_boolean.kiosk_mode: "on"
+      kiosk: true
+    - entity:
+        input_boolean.kiosk_mode: "off"
+      kiosk: false
+
+#button_card_templates: !include button_card_templates.yaml
+
+views:
+  - title: "Downstairs"
+    path: downstairs
+    icon: mdi:toy-brick
+    panel: true
+    theme: ""
+    badges: []
+    cards:
+      - type: custom:config-template-card
+        entities:
+          - light.living_room_all
+          - light.living_room_lights
+          - light.nanoleaf
+          - light.sideboard_lamp
+          - switch.lego
+          #
+          - light.hall_spots
+          - switch.hall_lamp
+          #
+          - light.pantry_light
+          - light.back_spots
+          - light.front_spots
+          - light.kitchen_pendants
+          - switch.kitchen_lamp
+          - light.kitchen_shelves
+          - light.kitchen_handles
+          #
+          - light.utility_spots
+          - switch.utility_fan
+          - light.corridor_spots
+          - switch.utility_mirror
+          - switch.utility_accents
+          #
+          - light.front_door_lights
+          - light.garage_front_lights
+          - light.bifold_lights
+          - light.back_door_lights
+          #
+          - media_player.living_room_shield
+          - sensor.livingroomtv_source
+          - sensor.livingroomtv_hue
+          - climate.kitchen
+          #
+          - person.howard
+          - person.deb
+          #
+          - sensor.date_string
+          - sensor.time
+          #
+          - binary_sensor.powerwall_status
+          - sensor.sunlight_opacity
+          - input_boolean.kiosk_mode
+        card:
+          type: picture-elements
+          image: /local/ui/floorplan/down/night.png
+          style: |
+            @keyframes pulse { 
+              0% {
+                opacity: 0;
+              }
+              100% {
+                opacity: 1;
+              }
+            }
+            ha-card:first-child {
+              background: rgba(42, 46, 48, 1)
+            }
+          elements:
+            # Daytime overlay #
+            - action: none
+              entity: sun.sun
+              hold_action:
+                action: none
+              state_image:
+                above_horizon: /local/ui/floorplan/down/day.png
+                below_horizon: /local/ui/transparent.png
+              style:
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+                mix-blend-mode: lighten
+                opacity: "${ states['sensor.sunlight_opacity'].state }"
+              tap_action:
+                action: none
+              type: image
+
+              #########################    INDIVIDUAL LIGHTS - BLENDED IMAGE OVERLAYS    #########################
+
+            - action: none
+              entity: light.sideboard_lamp
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/down/lights/sideboard_lamp.png
+              style:
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+                mix-blend-mode: lighten
+                opacity: "${states['light.sideboard_lamp'].state === 'on' ? (states['light.sideboard_lamp'].attributes.brightness / 255) : '0'}"
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: light.living_room_lights
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/down/lights/living_room_lights.png
+              style:
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+                mix-blend-mode: lighten
+                opacity: "${states['light.living_room_lights'].state === 'on' ? (states['light.living_room_lights'].attributes.brightness / 255) : '0'}"
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: switch.lego
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/down/lights/lego.png
+              style:
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+                mix-blend-mode: lighten
+                opacity: "${states['switch.lego'].state === 'on' ? 0.5 : '0'}"
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: light.nanoleaf
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/down/lights/nanoleaf_green.png
+              style:
+                mix-blend-mode: lighten
+                opacity: "${states['light.nanoleaf'].state === 'on' ? (states['light.nanoleaf'].attributes.brightness / 255) : '0'}"
+                filter: >-
+                  ${ "hue-rotate(" + (states['light.nanoleaf'].attributes.hs_color
+                  ? states['light.nanoleaf'].attributes.hs_color[0]+170 : 0) + "deg)"}
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+              tap_action:
+                action: none
+              type: image
+
+            # hall
+
+            - action: none
+              entity: light.hall_spots
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/down/lights/hall_spots.png
+              style:
+                mix-blend-mode: lighten
+                opacity: "${states['light.hall_spots'].state === 'on' ? (states['light.hall_spots'].attributes.brightness / 255)*2 : '0'}"
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: switch.hall_lamp
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/down/lights/hall_lamp.png
+              style:
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+                mix-blend-mode: lighten
+                opacity: "${states['switch.hall_lamp'].state === 'on' ? 0.5 : '0'}"
+              tap_action:
+                action: none
+              type: image
+
+            # outside
+
+            - action: none
+              entity: light.front_door_lights
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/down/lights/front_door_lights.png
+              style:
+                mix-blend-mode: lighten
+                opacity: "${states['light.front_door_lights'].state === 'on' ? (states['light.front_door_lights'].attributes.brightness / 255) : '0'}"
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: light.back_door_lights
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/down/lights/back_door_lights.png
+              style:
+                mix-blend-mode: lighten
+                opacity: "${states['light.back_door_lights'].state === 'on' ? (states['light.back_door_lights'].attributes.brightness / 255) : '0'}"
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: light.bifold_lights
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/down/lights/bifold_lights.png
+              style:
+                mix-blend-mode: lighten
+                opacity: "${states['light.bifold_lights'].state === 'on' ? (states['light.bifold_lights'].attributes.brightness / 255) : '0'}"
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: light.garage_front_lights
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/down/lights/garage_front_lights.png
+              style:
+                mix-blend-mode: lighten
+                opacity: "${states['light.garage_front_lights'].state === 'on' ? (states['light.garage_front_lights'].attributes.brightness / 255) : '0'}"
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+              tap_action:
+                action: none
+              type: image
+
+            # kitchen
+
+            - action: none
+              entity: light.pantry_light
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/down/lights/pantry_light.png
+              style:
+                mix-blend-mode: lighten
+                opacity: "${states['light.pantry_light'].state === 'on' ? (states['light.pantry_light'].attributes.brightness / 255) : '0'}"
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: switch.kitchen_lamp
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/down/lights/kitchen_lamp.png
+              style:
+                mix-blend-mode: lighten
+                opacity: "${states['switch.kitchen_lamp'].state === 'on' ? '.8' : '0'}"
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: light.kitchen_shelves
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/down/lights/kitchen_shelves.png
+              style:
+                mix-blend-mode: lighten
+                opacity: "${states['light.kitchen_shelves'].state === 'on' ? (states['light.kitchen_shelves'].attributes.brightness / 255) : '0'}"
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: light.kitchen_handles
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/down/lights/kitchen_handles.png
+              style:
+                mix-blend-mode: lighten
+                opacity: "${states['light.kitchen_handles'].state === 'on' ? (states['light.kitchen_handles'].attributes.brightness / 255)*2 : '0'}"
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: light.front_spots
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/down/lights/front_spots.png
+              style:
+                mix-blend-mode: lighten
+                opacity: "${states['light.front_spots'].state === 'on' ? (states['light.front_spots'].attributes.brightness / 255) : '0'}"
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: light.back_spots
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/down/lights/back_spots.png
+              style:
+                mix-blend-mode: lighten
+                opacity: "${states['light.back_spots'].state === 'on' ? (states['light.back_spots'].attributes.brightness / 255) : '0'}"
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: light.kitchen_pendants
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/down/lights/kitchen_pendants.png
+              style:
+                mix-blend-mode: lighten
+                opacity: "${states['light.kitchen_pendants'].state === 'on' ? (states['light.kitchen_pendants'].attributes.brightness / 255)+.2 : '0'}"
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+              tap_action:
+                action: none
+              type: image
+
+            # utility
+
+            - action: none
+              entity: switch.utility_mirror
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/down/lights/utility_mirror.png
+              style:
+                mix-blend-mode: lighten
+                opacity: "${states['switch.utility_mirror'].state === 'on' ? '.8' : '0'}"
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: switch.utility_accents
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/down/lights/utility_accents.png
+              style:
+                mix-blend-mode: lighten
+                opacity: "${states['switch.utility_accents'].state === 'on' ? '.5' : '0'}"
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: light.utility_spots
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/down/lights/utility_spots.png
+              style:
+                mix-blend-mode: lighten
+                opacity: "${states['light.utility_spots'].state === 'on' ? (states['light.utility_spots'].attributes.brightness / 255) : '0'}"
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: light.corridor_spots
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/down/lights/corridor_spots.png
+              style:
+                mix-blend-mode: lighten
+                opacity: "${states['light.corridor_spots'].state === 'on' ? (states['light.corridor_spots'].attributes.brightness / 255) : '0'}"
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+              tap_action:
+                action: none
+              type: image
+
+            # powerwall - steady green when on, pulsing when charging/discharging
+            - action: none
+              entity: binary_sensor.powerwall_status
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/down/devices/powerwall.png
+              style:
+                mix-blend-mode: lighten
+                opacity: "${states['binary_sensor.powerwall_status'].state === 'on' ? '1' : '0'}"
+                animation: pulse 2s infinite alternate
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+              tap_action:
+                action: none
+              type: image
+
+            #########################    NAVIGATION    #########################
+
+            #########################    Items that float over floorplan    #########################
+
+            ## objects that have to sit on top
+            ## kitchen ac, states are off/heat/cool/heat_cool
+            - action: none
+              entity: climate.kitchen
+              hold_action:
+                action: none
+              state_image:
+                "off": /local/ui/floorplan/down/devices/kitchen_ac_off.png
+                "heat": /local/ui/floorplan/down/devices/kitchen_ac_heat.png
+                "cool": /local/ui/floorplan/down/devices/kitchen_ac_cool.png
+              style:
+                #mix-blend-mode: lighten
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: switch.utility_fan
+              hold_action:
+                action: none
+              tap_action:
+                action: toggle
+              state_image:
+                "on": /local/ui/floorplan/down/devices/fan.png
+                "off": /local/ui/floorplan/down/devices/fan-static.png
+              style:
+                top: 57.5%
+                left: 95%
+                width: 9%
+              type: image
+
+            - type: conditional
+              conditions:
+                - entity: sensor.livingroomtv_source
+                  state_not: "off"
+              elements:
+                - type: image
+                  image: /local/ui/floorplan/down/devices/tv-glow.gif
+                  entity: media_player.living_room_shield
+                  tap_action:
+                    action: more-info
+                  style:
+                    transform: rotate(1deg)
+                    top: 45.4%
+                    left: 24.3%
+                    width: 3.6%
+                    mix-blend-mode: screen
+                    filter: ${states['sensor.livingroomtv_hue'].state}
+                    opacity: 0.7
+
+            #########################    ROOM/GROUP CONTROL TRANSPARENT IMAGES    #########################
+            #  Used to create tap areas and popups for each room, referring to light groups.
+            #  Because the above images overlap each other, I used seperate transparent images
+            #. to handle the control of the room, so you always tap the right room.
+            #
+            #  browser_mod.popup is used for a tap and hold for a custom popup card
+            - entity: light.living_room_lights
+              image: /local/ui/transparent.png
+              style:
+                height: 33%
+                left: 18%
+                top: 54%
+                width: 23%
+              hold_action: none
+              tap_action:
+                action: call-service
+                service: homeassistant.toggle
+                service_data:
+                  entity_id: light.living_room_lights
+              type: image
+
+            - entity: light.nanoleaf
+              image: /local/ui/transparent.png
+              style:
+                height: 33%
+                left: 3%
+                top: 54%
+                width: 6%
+              hold_action: none
+              tap_action:
+                action: more-info
+              type: image
+
+            - entity: switch.lego
+              image: /local/ui/transparent.png
+              style:
+                height: 8%
+                width: 10%
+                top: 75%
+                left: 7.5%
+              hold_action: none
+              tap_action:
+                action: call-service
+                service: homeassistant.toggle
+                service_data:
+                  entity_id: switch.lego
+              type: image
+
+            - entity: light.sideboard_lamp
+              image: /local/ui/transparent.png
+              style:
+                height: 8%
+                width: 10%
+                top: 27%
+                left: 23%
+              tap_action:
+                action: call-service
+                service: homeassistant.toggle
+                service_data:
+                  entity_id: light.sideboard_lamp
+              hold_action: none
+              type: image
+
+            ## hall
+            - entity: light.hall_spots
+              image: /local/ui/transparent.png
+              style:
+                height: 25%
+                left: 38%
+                top: 36%
+                width: 16%
+              hold_action: none
+              tap_action:
+                action: call-service
+                service: homeassistant.toggle
+                service_data:
+                  entity_id: light.hall_spots
+              type: image
+
+            - entity: light.hall_spots
+              image: /local/ui/transparent.png
+              style:
+                height: 30%
+                left: 38%
+                top: 64%
+                width: 16%
+              hold_action: none
+              tap_action:
+                action: call-service
+                service: homeassistant.toggle
+                service_data:
+                  entity_id: light.hall_spots
+              type: image
+
+            - entity: switch.hall_lamp
+              image: /local/ui/transparent.png
+              style:
+                z-index: 15
+                height: 5%
+                width: 8%
+                top: 48%
+                left: 42%
+              tap_action:
+                action: call-service
+                service: homeassistant.toggle
+                service_data:
+                  entity_id: switch.hall_lamp
+              hold_action: none
+              type: image
+
+              ### outside
+
+            - entity: light.back_door_lights
+              image: /local/ui/transparent.png
+              style:
+                height: 9%
+                width: 15%
+                top: 85%
+                left: 38%
+              tap_action:
+                action: call-service
+                service: homeassistant.toggle
+                service_data:
+                  entity_id: light.back_door_lights
+              hold_action: none
+              type: image
+
+            - entity: light.front_door_lights
+              image: /local/ui/transparent.png
+              style:
+                height: 7%
+                width: 15%
+                top: 17.75%
+                left: 34.5%
+              tap_action:
+                action: call-service
+                service: homeassistant.toggle
+                service_data:
+                  entity_id: light.front_door_lights
+              hold_action: none
+              type: image
+
+            - entity: light.bifold_lights
+              image: /local/ui/transparent.png
+              style:
+                height: 9%
+                width: 28%
+                top: 85%
+                left: 62%
+              tap_action:
+                action: call-service
+                service: homeassistant.toggle
+                service_data:
+                  entity_id: light.bifold_lights
+              hold_action: none
+              type: image
+
+            - entity: light.garage_front_lights
+              image: /local/ui/transparent.png
+              style:
+                height: 12%
+                width: 7%
+                top: 24.75%
+                left: 82%
+              tap_action:
+                action: call-service
+                service: homeassistant.toggle
+                service_data:
+                  entity_id: light.garage_front_lights
+              hold_action: none
+              type: image
+
+            ### utility
+            - entity: light.utility_spots
+              image: /local/ui/transparent.png
+              style:
+                height: 13%
+                width: 12%
+                top: 59.1%
+                left: 86%
+              tap_action:
+                action: call-service
+                service: homeassistant.toggle
+                service_data:
+                  entity_id: light.utility_spots
+              hold_action: none
+              type: image
+
+            - entity: light.corridor_spots
+              image: /local/ui/transparent.png
+              style:
+                height: 10%
+                width: 17%
+                top: 72%
+                left: 89%
+              tap_action:
+                action: call-service
+                service: homeassistant.toggle
+                service_data:
+                  entity_id: light.corridor_spots
+              hold_action: none
+              type: image
+
+            ## kitchen
+
+            - entity: light.front_spots
+              image: /local/ui/transparent.png
+              style:
+                height: 28%
+                width: 28%
+                top: 39%
+                left: 66%
+              tap_action:
+                action: call-service
+                service: homeassistant.toggle
+                service_data:
+                  entity_id: light.front_spots
+              hold_action: none
+              type: image
+
+            - entity: light.back_spots
+              image: /local/ui/transparent.png
+              style:
+                height: 25%
+                width: 33%
+                top: 66%
+                left: 63%
+              tap_action:
+                action: call-service
+                service: homeassistant.toggle
+                service_data:
+                  entity_id: light.back_spots
+              hold_action: none
+              type: image
+
+            - entity: switch.kitchen_lamp
+              image: /local/ui/transparent.png
+              style:
+                z-index: 15
+                height: 13%
+                width: 9%
+                top: 24%
+                left: 56%
+              tap_action:
+                action: call-service
+                service: homeassistant.toggle
+                service_data:
+                  entity_id: switch.kitchen_lamp
+              hold_action: none
+              type: image
+
+            - entity: light.kitchen_pendants
+              image: /local/ui/transparent.png
+              style:
+                z-index: 15
+                height: 12%
+                width: 9%
+                top: 52.5%
+                left: 61.5%
+                # background-color: "red"
+                # opacity: 0.5
+              tap_action:
+                action: call-service
+                service: homeassistant.toggle
+                service_data:
+                  entity_id: light.kitchen_pendants
+              hold_action: none
+              type: image
+
+            - entity: light.kitchen_pendants
+              image: /local/ui/transparent.png
+              style:
+                z-index: 15
+                height: 11%
+                width: 9%
+                top: 64%
+                left: 61.5%
+                # background-color: "blue"
+                # opacity: 0.5
+              tap_action:
+                action: call-service
+                service: homeassistant.toggle
+                service_data:
+                  entity_id: light.kitchen_pendants
+              hold_action: none
+              type: image
+
+            #########################    TIME AND DATE    #########################
+            - entity: sensor.time
+              hold_action: none
+              style:
+                color: "rgba(255, 255, 255, 0.7)"
+                font-size: 5.41vw
+                font-weight: 200
+                left: 2.7%
+                letter-spacing: "-0.05vw"
+                max-width: 1px
+                top: 6%
+              tap_action:
+                action: call-service
+                service: input_boolean.toggle
+                service_data:
+                  entity_id: input_boolean.kiosk_mode
+              type: state-label
+            - entity: sensor.date_string
+              hold_action: none
+              style:
+                color: "rgba(255, 255, 255, 0.3)"
+                font-size: 1.3vw
+                font-weight: 300
+                left: 18.1%
+                letter-spacing: "-0.05vw"
+                text-align: left
+                top: 10.5%
+                width: 30%
+              tap_action: none
+              type: state-label
+
+            #########################    People at home    #########################
+
+            - action: none
+              entity: person.howard
+              image: /local/ui/people/howard.png
+              style:
+                background-color: "rgba(255, 255, 255, 0.0)"
+                opacity: "${states['person.howard'].state === 'home' ? '1' : '0.5'}"
+                border-radius: 10vw
+                height: 4.5vw
+                left: 89.5%
+                top: 6%
+                width: 4.5vw
+              tap_action: none
+              type: image
+
+            - action: none
+              entity: person.deb
+              image: /local/ui/people/deb.png
+              style:
+                background-color: "rgba(255, 255, 255, 0.0)"
+                opacity: "${states['person.deb'].state === 'home' ? '1' : '0.3'}"
+                border-radius: 10vw
+                height: 4.5vw
+                left: 95%
+                top: 6%
+                width: 4.5vw
+              tap_action: none
+              type: image
+
+            #########################    UI elements    #########################
+
+            - action: none
+              entity: sun.sun
+              image: /local/ui/arrow-up.png
+              style:
+                background-color: "rgba(255, 255, 255, 0.0)"
+                border-radius: 10vw
+                height: 4.25vw
+                left: 28%
+                top: 6%
+                width: 4.25vw
+              tap_action:
+                action: navigate
+                navigation_path: /ui-lego/upstairs
+              hold_action: none
+              type: image
+
+  - title: "Upstairs"
+    path: upstairs
+    icon: mdi:toy-brick
+    panel: true
+    theme: ""
+    badges: []
+    cards:
+      - type: custom:config-template-card
+        entities:
+          # landing
+          - light.landing_spots
+          - light.landing_pendant
+          # office
+          - light.office_spots
+          - light.desk_leds
+          - switch.frame
+          - climate.office
+          # bathroom
+          - light.bathroom_spots
+          - switch.bathroom_mirror
+          - switch.bathroom_accents
+          - light.shelly_bathroom_mirror_rgb
+          - sensor.bathroom_is_red
+          - switch.bathroom_fan
+          # dressing room
+          - light.wardrobes_level_on_off
+          - switch.guest_lamp
+          # bedroom
+          - light.bedroom_light
+          - light.balcony
+          - sensor.bedleftlamp_on
+          - sensor.bedrightlamp_on
+          - light.headboard
+          - media_player.bedroom_shield
+          - sensor.bedroomtv_source
+          - sensor.bedroomtv_hue
+          - climate.bedroom
+          #
+          - person.howard
+          - person.deb
+          #
+          - sensor.date_string
+          - sensor.time
+          #
+          - sensor.sunlight_opacity
+          - input_boolean.kiosk_mode
+        card:
+          type: picture-elements
+          image: /local/ui/floorplan/up/night.png
+          style: |
+            @keyframes pulse { 
+              0% {
+                opacity: 0;
+              }
+              100% {
+                opacity: 1;
+              }
+            }
+            ha-card:first-child {
+              background: rgba(42, 46, 48, 1)
+            }
+          elements:
+            # Daytime overlay #
+            - action: none
+              entity: sun.sun
+              hold_action:
+                action: none
+              state_image:
+                above_horizon: /local/ui/floorplan/up/day.png
+                below_horizon: /local/ui/transparent.png
+              style:
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+                mix-blend-mode: lighten
+                opacity: "${ states['sensor.sunlight_opacity'].state }"
+              tap_action:
+                action: none
+              type: image
+
+              #########################    INDIVIDUAL LIGHTS - BLENDED IMAGE OVERLAYS    #########################
+
+            - action: none
+              entity: sensor.bedleftlamp_on
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/up/lights/hubby_lamp.png
+              style:
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+                mix-blend-mode: lighten
+                opacity: "${ !!(states['sensor.bedleftlamp_on'].state === true) ? '0.5' : '0'}"
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: sensor.bedrightlamp_on
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/up/lights/wifey_lamp.png
+              style:
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+                mix-blend-mode: lighten
+                opacity: "${ !!(states['sensor.bedrightlamp_on'].state === true) ? '0.5' : '0'}"
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: light.headboard
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/up/lights/headboard.png
+              style:
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+                mix-blend-mode: lighten
+                opacity: "${states['light.headboard'].state === 'on' ? (states['light.headboard'].attributes.brightness / 255) * 1.5 : '0'}"
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: light.bedroom_light
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/up/lights/bedroom_light.png
+              style:
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+                mix-blend-mode: lighten
+                opacity: "${states['light.bedroom_light'].state === 'on' ? (states['light.bedroom_light'].attributes.brightness / 255)  : '0'}"
+              tap_action:
+                action: none
+              type: image
+
+            # dressing room
+
+            - action: none
+              entity: sensor.guestlamp_on
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/up/lights/guest_lamp.png
+              style:
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+                mix-blend-mode: lighten
+                opacity: "${ !!(states['sensor.guestlamp_on'].state === true) ? '0.5' : '0'}"
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: light.wardrobes_level_on_off
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/up/lights/wardrobes.png
+              style:
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+                mix-blend-mode: lighten
+                opacity: "${states['light.wardrobes_level_on_off'].state === 'on' ? (states['light.wardrobes_level_on_off'].attributes.brightness / 255)  : '0'}"
+              tap_action:
+                action: none
+              type: image
+
+            # office
+
+            - action: none
+              entity: light.office_spots
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/up/lights/office_spots.png
+              style:
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+                mix-blend-mode: lighten
+                opacity: "${states['light.office_spots'].state === 'on' ? (states['light.office_spots'].attributes.brightness / 255) * 1.5 : '0'}"
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: light.desk_leds
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/up/lights/office_desk_leds.png
+              style:
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+                mix-blend-mode: lighten
+                opacity: "${states['light.desk_leds'].state === 'on' ? (states['light.desk_leds'].attributes.brightness / 255) : '0'}"
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: switch.frame
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/up/lights/office_pc_glow.png
+              style:
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+                mix-blend-mode: lighten
+                #opacity: "${states['light.desk_leds'].state === 'on' ? (states['light.desk_leds'].attributes.brightness / 255) : '0'}"
+              tap_action:
+                action: none
+              type: image
+
+            # landing
+
+            - action: none
+              entity: light.landing_pendant
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/up/lights/landing_pendant.png
+              style:
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+                mix-blend-mode: lighten
+                opacity: "${states['light.landing_pendant'].state === 'on' ? (states['light.landing_pendant'].attributes.brightness / 255) * 1.5 : '0'}"
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: light.landing_spots
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/up/lights/landing_spots.png
+              style:
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+                mix-blend-mode: lighten
+                opacity: "${states['light.landing_spots'].state === 'on' ? (states['light.landing_spots'].attributes.brightness / 255) * 1.5 : '0'}"
+              tap_action:
+                action: none
+              type: image
+
+            # bathroom
+
+            - action: none
+              entity: switch.bathroom_accents
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/up/lights/bathroom_accents.png
+              style:
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+                mix-blend-mode: lighten
+                opacity: "${states['switch.bathroom_accents'].state === 'on' ? '1' : '0'}"
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: switch.bathroom_mirror
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/up/lights/bathroom_mirror.png
+              style:
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+                mix-blend-mode: lighten
+                opacity: "${states['switch.bathroom_mirror'].state === 'on' ? (states['switch.bathroom_mirror'].attributes.brightness / 255) : '0'}"
+              tap_action:
+                action: none
+              type: image
+
+            - action: none
+              entity: light.shelly_bathroom_mirror_rgb
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/up/lights/bathroom_red.png
+              style:
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+                mix-blend-mode: lighten
+                filter: hue-rotate(125);
+                opacity: "${states['sensor.bathroom_is_red'].state === 'True' ? (states['sensor.bathroom_red_opacity']) : '0'}"
+              tap_action:
+                action: none
+              type: image
+
+            # balcony
+
+            - action: none
+              entity: light.balcony
+              hold_action:
+                action: none
+              image: /local/ui/floorplan/up/lights/balcony.png
+              style:
+                height: 100%
+                left: 50%
+                top: 50%
+                width: 100%
+                mix-blend-mode: lighten
+                opacity: "${states['light.balcony'].state === 'on' ? (states['light.balcony'].attributes.brightness / 255) * 1.5 : '0'}"
+              tap_action:
+                action: none
+              type: image
+
+            #######
+
+            - action: none
+              entity: switch.bathroom_fan
+              hold_action:
+                action: none
+              tap_action:
+                action: toggle
+              state_image:
+                "on": /local/ui/floorplan/devices/fan.png
+                "off": /local/ui/floorplan/devices/fan-static.png
+              style:
+                top: 27%
+                left: 32.5%
+                width: 9%
+              type: image
+
+            #########################    TIME AND DATE    #########################
+            - entity: sensor.time
+              hold_action: none
+              style:
+                color: "rgba(255, 255, 255, 0.7)"
+                font-size: 5.41vw
+                font-weight: 200
+                left: 2.7%
+                letter-spacing: "-0.05vw"
+                max-width: 1px
+                top: 6%
+              tap_action:
+                action: call-service
+                service: input_boolean.toggle
+                service_data:
+                  entity_id: input_boolean.kiosk_mode
+              type: state-label
+            - entity: sensor.date_string
+              hold_action: none
+              style:
+                color: "rgba(255, 255, 255, 0.3)"
+                font-size: 1.3vw
+                font-weight: 300
+                left: 18.1%
+                letter-spacing: "-0.05vw"
+                text-align: left
+                top: 10.5%
+                width: 30%
+              tap_action: none
+              type: state-label
+
+            #########################    People at home    #########################
+
+            - action: none
+              entity: person.howard
+              image: /local/ui/people/howard.png
+              style:
+                background-color: "rgba(255, 255, 255, 0.0)"
+                opacity: "${states['person.howard'].state === 'home' ? '1' : '0.5'}"
+                border-radius: 10vw
+                height: 4.5vw
+                left: 89.5%
+                top: 6%
+                width: 4.5vw
+              tap_action: none
+              type: image
+
+            - action: none
+              entity: person.deb
+              image: /local/ui/people/deb.png
+              style:
+                background-color: "rgba(255, 255, 255, 0.0)"
+                opacity: "${states['person.deb'].state === 'home' ? '1' : '0.3'}"
+                border-radius: 10vw
+                height: 4.5vw
+                left: 95%
+                top: 6%
+                width: 4.5vw
+              tap_action: none
+              type: image
+
+            #########################    UI elements    #########################
+
+            - action: none
+              entity: sun.sun
+              image: /local/ui/arrow-down.png
+              style:
+                background-color: "rgba(255, 255, 255, 0.0)"
+                border-radius: 10vw
+                height: 4.25vw
+                left: 28%
+                top: 6%
+                width: 4.25vw
+              tap_action:
+                action: navigate
+                navigation_path: /ui-lego/downstairs
+              hold_action: none
+              type: image

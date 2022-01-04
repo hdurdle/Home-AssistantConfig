@@ -1,0 +1,14 @@
+sensor:
+  - platform: template
+    sensors:
+      powerwall_remaining:
+        value_template: "{{ (states('sensor.powerwall_charge') | float(0) / 100 * 27) | round(2) }}"
+        unit_of_measurement: kWh
+      powerwall_time_remaining:
+        unit_of_measurement: hours
+        value_template: >
+          {%- if (states('sensor.powerwall_battery_now') | float(0) > 0.1) -%}
+          {{ ((states('sensor.powerwall_stored_energy') | float(0)) / ( states('sensor.powerwall_battery_now') | float(0))) | round(2) }}
+          {%- else -%}       
+          {{ ((states('sensor.powerwall_stored_energy') | float(0)) / ( states('sensor.powerwall_load_now') | float(0))) | round(2) }}
+          {%- endif -%}

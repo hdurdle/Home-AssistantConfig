@@ -1,0 +1,17 @@
+sensor:
+  - platform: template
+    sensors:
+      garage_car_present:
+        friendly_name: "i8 in Garage"
+        availability_template: >-
+          {%- if not is_state("cover.garagedoor", "unavailable") and not is_state("device_tracker.i8", "unavailable") %}
+            true
+          {%- endif %}        
+        value_template: "{% if ( is_state('device_tracker.i8','not_home')) %}
+          No
+          {% elif is_state('cover.garagedoor', 'open') %}
+          n/a
+          {% elif (( states('sensor.garage_door_dist') | float > 40) and (states('sensor.garage_door_dist') | float < 150)) %}
+          Yes
+          {% endif %}"
+        icon_template: "{%- if is_state('cover.garagedoor', 'open') %}mdi:car{% else %}mdi:car-off{%- endif %}"

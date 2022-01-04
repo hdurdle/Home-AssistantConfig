@@ -1,0 +1,11 @@
+sensor:
+  - platform: template
+    sensors:
+      last_door:
+        friendly_name: "Last Door"
+        unique_id: "last_door"
+        value_template: >
+          {% set sensors = [states.binary_sensor.back_door_is_open, states.binary_sensor.front_door_open, states.binary_sensor.garden_door_is_open] %}
+          {% set time = sensors | map(attribute='last_changed') | max %}
+          {% set sensor = (sensors | selectattr('last_changed','eq', time) | list)[0] %}
+          {{sensor.name}} ({% if sensor.state == 'on' %}Open{%else%}Closed{%endif%})

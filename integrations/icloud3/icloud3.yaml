@@ -1,0 +1,5 @@
+device_tracker:
+  - platform: icloud3
+    config_ic3_file_name: /ic3_config/ic3_config.yaml
+    username: !secret icloud_user
+    password: !secret icloud_pass

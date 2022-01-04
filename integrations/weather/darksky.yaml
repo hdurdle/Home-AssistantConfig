@@ -1,0 +1,20 @@
+sensor:
+  - platform: darksky
+    api_key: !secret darksky_api_token
+    forecast:
+      - 0
+    hourly_forecast:
+      - 0
+      - 1
+    monitored_conditions:
+      - summary
+      - icon
+      - temperature
+      - apparent_temperature
+      - cloud_cover
+      - uv_index
+      - humidity
+
+weather:
+  - platform: darksky
+    api_key: !secret darksky_api_token

@@ -1,0 +1,22 @@
+# input_number:
+#   elec_limit_high:
+#     name: Electricity Limit High
+#     initial: 30
+#     max: 35
+#     min: 20
+#     step: 1
+#     mode: box
+#   elec_limit_medium:
+#     name: Electricity Limit Medium
+#     initial: 20
+#     max: 20
+#     min: 12
+#     step: 1
+#     mode: box
+#   elec_limit_low:
+#     name: Electricity Limit Low
+#     initial: 12
+#     max: 12
+#     min: 1
+#     step: 1
+#     mode: box

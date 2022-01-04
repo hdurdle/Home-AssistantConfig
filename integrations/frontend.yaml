@@ -1,2 +1,2 @@
 frontend:
-  themes: !include ../themes/ios-themes/ios-themes.yaml
+  themes: !include_dir_merge_named ../themes

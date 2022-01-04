@@ -1,0 +1,26 @@
+automation:
+  - id: quooker_set_idle_on_power_change
+    alias: 'Quooker: Set idle on power change'
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.quooker_energy_apparentpower
+        below: '60'
+        above: '2'
+      - platform: homeassistant
+        id: "start"
+        event: start
+      - platform: event
+        id: "reload"
+        event_type: automation_reloaded
+    condition:
+      - condition: numeric_state
+        entity_id: sensor.quooker_energy_apparentpower
+        below: '60'
+        above: '2'
+    action:
+      - service: input_select.set_options
+        target:
+          entity_id: input_select.quooker_status
+        data:
+          options: Idle
+    mode: single
